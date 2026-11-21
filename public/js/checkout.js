@@ -50,6 +50,8 @@ function render() {
 $("#minus").onclick = () => { qty = Math.max(1, qty - 1); render(); };
 $("#plus").onclick = () => { qty = Math.min(10, qty + 1); render(); };
 render();
+const evData = (total) => ({ content_ids: [PRODUCT_ID], content_type: "product", num_items: qty + bumps.length, value: total / 100, currency: "BRL" });
+track("InitiateCheckout", evData(render()));
 
 function showErr(m, el) { $("#err").classList.remove("hidden"); $("#err-msg").textContent = "⚠️ " + m; $$(".inp").forEach((i) => i.classList.remove("bad")); if (el) { el.classList.add("bad"); el.focus(); } window.scrollTo({ top: 0, behavior: "smooth" }); }
 function validate() {
@@ -78,13 +80,16 @@ $("#buy").onclick = async () => {
     customer: { name: g("name"), email: g("email"), phone: digits(g("phone")), document: { number: digits(g("cpf")), type: "cpf" } },
     shipping: { street: g("street"), number: g("number"), complement: g("complement"), neighborhood: g("district"), city: g("city"), state: g("uf").toUpperCase(), zipCode: digits(g("cep")) },
   };
+  track("AddPaymentInfo", { ...evData(total), payment_method: "pix" });
   btn.disabled = true; btn.textContent = "Gerando Pix...";
   try {
     if (!S.PIX_ENDPOINT) throw new Error("Pagamento Pix ainda não configurado. Defina PIX_ENDPOINT em js/config.js (veja o README).");
     const r = await fetch(S.PIX_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
     const j = await r.json();
     if (!r.ok || !j.success) throw new Error(j.error || "Erro ao gerar pagamento. Tente novamente.");
-    store.set("pix", { ...j.data, total, email: payload.customer.email });
+    store.set("pix", { ...j.data, total, email: payload.customer.email, qty: qty + bumps.length });
+    store.set("paid", null);
+    trackCustom("PixGerado", evData(total));
     location.href = "/pix";
   } catch (e) { showErr(e.message); btn.disabled = false; btn.textContent = "Fazer pedido"; }
 };

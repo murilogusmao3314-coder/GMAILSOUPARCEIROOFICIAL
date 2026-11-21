@@ -6,6 +6,7 @@ $("#off").textContent = "-" + Math.round((1 - P.price / P.comparePrice) * 100) +
 $("#installments").textContent = `${P.installments}x de ${brl(Math.round(P.price / P.installments))} sem juros no cartão`;
 $("#store-name").textContent = S.name;
 $("#footer").innerHTML = footerHTML();
+track("ViewContent", { content_ids: [PRODUCT_ID], content_type: "product", content_name: P.shortTitle, value: P.price / 100, currency: "BRL" });
 
 // Contador regressivo até o fim do dia (não reinicia sozinho)
 function tick() {
@@ -96,6 +97,7 @@ const close = () => sheet.classList.add("hidden");
 $("#sheet-close").onclick = close; $("#sheet-bg").onclick = close;
 $("#sheet-buy").onclick = () => {
   if (!pick) return;
+  track("AddToCart", { content_ids: [PRODUCT_ID], content_type: "product", content_name: P.shortTitle + " — " + VARIANTS[pick].label, contents: [{ id: PRODUCT_ID, quantity: VARIANTS[pick].qty }], value: (P.price * VARIANTS[pick].qty) / 100, currency: "BRL" });
   store.set("order", { color: pick, qty: VARIANTS[pick].qty });
   location.href = "/checkout";
 };

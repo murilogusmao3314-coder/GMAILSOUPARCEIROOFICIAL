@@ -26,3 +26,13 @@ Projeto Next.js (compatível com v0/Vercel): as páginas ficam em `public/` e `n
 ## Antes de publicar
 - Troque os textos/avaliações/contagens ("5.821 vendidos", 327 avaliações, etc.) por dados reais da sua loja.
 - Revise as políticas legais com seu contador/advogado.
+
+## Meta Pixel (ID 1125182217062286)
+`public/js/pixel.js` é carregado em todas as páginas. Eventos:
+- `PageView` — todas as páginas
+- `ViewContent` — home
+- `AddToCart` — ao confirmar a variante ("Comprar agora"/"Adicionar ao carrinho")
+- `InitiateCheckout` — abrir o checkout
+- `AddPaymentInfo` — clicar em "Fazer pedido" com os dados válidos
+- `PixGerado` (personalizado) — Pix gerado
+- `Purchase` — **somente** quando o pagamento é confirmado (`PIX_STATUS_ENDPOINT` retorna `paid:true`) e só uma vez por pedido

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout</title>
+  <link rel="icon" href="assets/favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-gray-50">
+<div class="max-w-md mx-auto min-h-screen pb-40 overflow-x-hidden">
+  <div class="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
+    <button onclick="history.length>1?history.back():location.href='index.html'" class="p-1 text-gray-700" aria-label="Voltar"><span id="ic-back"></span></button>
+    <div class="flex-1 text-center">
+      <h1 class="text-base font-semibold text-gray-800">Resumo do pedido</h1>
+      <p class="text-xs text-emerald-600 flex items-center justify-center gap-1"><span id="ic-shield"></span> Seus dados estão seguros conosco</p>
+    </div>
+    <div class="w-6"></div>
+  </div>
+  <div id="err" class="hidden px-4 py-2 bg-red-50 border-b border-red-200"><p class="text-sm text-red-600 font-medium text-center" id="err-msg"></p></div>
+
+  <form id="form" class="bg-white border-b border-gray-100" novalidate autocomplete="on">
+    <div class="px-4 py-3 flex items-center justify-between border-b border-gray-100">
+      <div class="flex items-center gap-2 text-sm font-medium text-gray-800"><span id="ic-pin"></span>Endereço de envio</div>
+      <span class="text-sm font-medium text-red-600">+ Adicionar endereço</span>
+    </div>
+    <div class="p-4 space-y-3">
+      <input id="name" name="name" autocomplete="name" placeholder="Nome completo" class="inp" />
+      <div class="relative"><span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">+55</span><input id="phone" name="phone" autocomplete="tel-national" inputmode="numeric" placeholder="Telefone com DDD" class="inp" style="padding-left:48px" /></div>
+      <input id="email" name="email" type="email" autocomplete="email" placeholder="E-mail" class="inp" />
+      <input id="cep" name="cep" autocomplete="postal-code" inputmode="numeric" placeholder="CEP" class="inp" />
+      <div class="grid grid-cols-2 gap-3"><input id="uf" maxlength="2" placeholder="UF" class="inp uppercase" /><input id="city" placeholder="Cidade" class="inp" /></div>
+      <input id="district" placeholder="Bairro" class="inp" />
+      <input id="street" placeholder="Endereço (rua, avenida...)" class="inp" />
+      <div class="grid grid-cols-2 gap-3"><input id="number" placeholder="Número" class="inp" /><input id="complement" placeholder="Complemento" class="inp" /></div>
+      <input id="cpf" inputmode="numeric" placeholder="CPF (000.000.000-00)" class="inp" />
+    </div>
+  </form>
+
+  <div class="border-t-2 border-dashed border-cyan-300"></div>
+  <section class="bg-white px-4 py-4">
+    <p class="font-semibold text-sm">⚠️ Poucas unidades disponíveis</p>
+    <p class="text-xs text-green-700 font-medium mb-3">⭐ Muito bem avaliado! 4.8/5,0</p>
+    <div class="flex gap-3">
+      <img id="p-img" class="h-20 w-20 rounded object-cover" alt="" />
+      <div class="flex-1 min-w-0">
+        <p class="text-sm text-gray-800 leading-snug" id="p-title"></p>
+        <p class="text-xs text-gray-500 mt-1" id="p-variant"></p>
+        <span class="inline-block text-[10px] bg-yellow-100 text-yellow-800 rounded px-1.5 py-0.5 mt-1">🔄 Devolução gratuita</span>
+        <div class="flex items-center justify-between mt-2">
+          <div><b class="text-red-600" id="p-price"></b> <s class="text-xs text-gray-400" id="p-compare"></s></div>
+          <div class="flex items-center border border-gray-200 rounded"><button type="button" id="minus" class="h-7 w-7">−</button><span id="qty" class="w-8 text-center text-sm"></span><button type="button" id="plus" class="h-7 w-7">+</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="bumps-wrap" class="bg-white px-4 pb-4"><p class="font-semibold text-sm mb-3">Leve junto e economize</p><div id="bumps" class="space-y-3"></div></section>
+
+  <section class="bg-white px-4 py-4 mt-2">
+    <p class="font-semibold text-sm mb-3">Opções de envio</p>
+    <div id="ship" class="space-y-3"></div>
+  </section>
+
+  <section class="bg-white px-4 py-4 mt-2" id="discount-row">
+    <div class="flex items-center justify-between text-sm"><span>🏷️ Desconto da promoção</span><span class="text-red-600 font-medium" id="discount"></span></div>
+  </section>
+
+  <section class="bg-white px-4 py-4 mt-2 text-sm">
+    <p class="font-semibold mb-3">Resumo do pedido</p>
+    <div class="flex justify-between py-1 text-gray-700"><span id="sub-label"></span><span id="subtotal"></span></div>
+    <div class="flex justify-between py-1 text-gray-700"><span>Taxa de envio</span><span id="shipcost" class="text-green-600"></span></div>
+    <div class="flex justify-between pt-3 mt-2 border-t border-gray-200 font-bold text-base"><span>Total</span><span id="total"></span></div>
+    <p class="text-right text-[11px] text-gray-400">Impostos inclusos</p>
+  </section>
+
+  <section class="bg-white px-4 py-4 mt-2">
+    <p class="font-semibold text-sm mb-3">Forma de pagamento</p>
+    <div class="flex items-center justify-between"><div class="flex items-center gap-2 text-sm"><img src="assets/pix-icon.png" class="h-5 w-5" alt=""/>Pix</div><span class="h-5 w-5 rounded-full border-2 border-red-600 flex items-center justify-center"><span class="h-2.5 w-2.5 rounded-full bg-red-600"></span></span></div>
+    <p class="text-[11px] text-gray-500 mt-4 pt-4 border-t border-gray-100">Ao fazer um pedido, você concorda com os <a class="font-bold text-gray-700" href="termos-de-uso.html">Termos de uso e venda</a> e reconhece que leu e concorda com a <a class="font-bold text-gray-700" href="politica-de-privacidade.html">Política de privacidade</a>.</p>
+  </section>
+  <p class="px-4 py-4 text-sm text-green-700 font-medium">😊 <span id="saving"></span></p>
+  <div class="px-4 space-y-4">
+    <div class="bg-white rounded-2xl shadow p-5"><p class="font-bold mb-2">Como fazer pagamentos com PIX?</p><p class="text-sm text-gray-500">Copie o código de pagamento gerado, selecione Pix no seu app de internet ou de banco e cole o código.</p></div>
+    <div class="bg-white rounded-2xl shadow p-5"><p class="font-bold mb-2">⚠️ Atenção:</p><p class="text-sm text-gray-500">Os bancos reforçaram a segurança do Pix e podem exibir avisos preventivos. Não se preocupe, sua transação está protegida.</p></div>
+  </div>
+
+  <div class="fixed bottom-0 inset-x-0 z-40"><div class="max-w-md mx-auto bg-white border-t border-gray-200 px-4 py-3 shadow-[0_-4px_12px_rgba(0,0,0,.06)]">
+    <div class="flex items-center justify-between mb-3"><span class="font-semibold text-sm" id="bar-label"></span><b class="text-xl text-red-600" id="bar-total"></b></div>
+    <button id="buy" class="w-full rounded-xl bg-pink-500 text-white font-bold py-3.5 disabled:opacity-60">Fazer pedido</button>
+  </div></div>
+</div>
+<style>.inp{width:100%;height:42px;border:1px solid #e5e7eb;border-radius:8px;padding:0 12px;font-size:14px;background:#fff;outline:none}.inp:focus{border-color:#e60000}.inp.bad{border-color:#e60000}</style>
+<script src="js/config.js"></script>
+<script src="js/common.js"></script>
+<script src="js/checkout.js"></script>
+</body>
+</html>

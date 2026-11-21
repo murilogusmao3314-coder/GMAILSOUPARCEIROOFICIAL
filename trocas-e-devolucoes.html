@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Política de Trocas e Devoluções</title>
+  <link rel="icon" href="assets/favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="max-w-md mx-auto min-h-screen px-5 py-4">
+  <a href="index.html" class="inline-flex items-center gap-2 text-sm text-gray-600 mb-4">← Voltar</a>
+  <h1 class="text-xl font-extrabold mb-1">Política de Trocas e Devoluções</h1>
+  <p class="text-xs text-gray-400 mb-4">Última atualização: Fevereiro de 2025</p>
+<h2 class="font-bold text-base mt-6 mb-2">1. Direito de Arrependimento</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">De acordo com o Código de Defesa do Consumidor, você tem até 7 (sete) dias corridos após o recebimento do produto para solicitar a devolução e reembolso integral, sem necessidade de justificativa.</p>
+<h2 class="font-bold text-base mt-6 mb-2">2. Condições para Troca ou Devolução</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Para que a troca ou devolução seja aceita, o produto deve:</p>
+<ul class="list-disc pl-5 text-sm text-gray-600 space-y-1 mb-3"><li>Estar na embalagem original, sem sinais de uso</li><li>Conter todos os acessórios e manuais</li><li>Não apresentar danos causados pelo cliente</li><li>Estar acompanhado da nota fiscal</li><li>3. Produtos com Defeito</li></ul>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Caso o produto apresente defeito de fabricação, você tem até 90 (noventa) dias para solicitar a troca ou reparo. Realizaremos a análise técnica e, comprovado o defeito, ofereceremos as opções de:</p>
+<ul class="list-disc pl-5 text-sm text-gray-600 space-y-1 mb-3"><li>Substituição por produto idêntico</li><li>Reembolso integral do valor pago</li><li>Abatimento proporcional do preço</li><li>4. Como Solicitar</li></ul>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Para solicitar troca ou devolução:</p>
+<ul class="list-disc pl-5 text-sm text-gray-600 space-y-1 mb-3"><li>Entre em contato pelo e-mail <span data-store="email"></span></li><li>Informe o número do pedido e motivo da solicitação</li><li>Aguarde as instruções de envio</li><li>Envie o produto conforme orientações recebidas</li><li>5. Custos de Envio</li></ul>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Em caso de arrependimento, os custos de envio da devolução são de responsabilidade do cliente.</p>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Em caso de defeito de fabricação ou erro no envio, os custos de envio serão por nossa conta.</p>
+<h2 class="font-bold text-base mt-6 mb-2">6. Prazo de Reembolso</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Após recebermos e aprovarmos a devolução, o reembolso será processado em até 10 (dez) dias úteis. O valor será estornado na mesma forma de pagamento utilizada na compra.</p>
+<h2 class="font-bold text-base mt-6 mb-2">7. Contato</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">E-mail: <span data-store="email"></span><br/><span data-store="company"></span><br/>CNPJ: <span data-store="cnpj"></span></p>
+</div>
+<script src="js/config.js"></script>
+<script>
+  const S = window.STORE, map = { email: S.email, company: S.company, cnpj: S.cnpj };
+  document.querySelectorAll("[data-store]").forEach((el) => (el.textContent = map[el.dataset.store] || ""));
+</script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Política de Privacidade</title>
+  <link rel="icon" href="assets/favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="max-w-md mx-auto min-h-screen px-5 py-4">
+  <a href="index.html" class="inline-flex items-center gap-2 text-sm text-gray-600 mb-4">← Voltar</a>
+  <h1 class="text-xl font-extrabold mb-1">Política de Privacidade</h1>
+  <p class="text-xs text-gray-400 mb-4">Última atualização: Fevereiro de 2025</p>
+<h2 class="font-bold text-base mt-6 mb-2">1. Informações que Coletamos</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Coletamos informações que você nos fornece diretamente, como nome, endereço de e-mail, endereço de entrega, número de telefone e informações de pagamento quando você realiza uma compra.</p>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Também coletamos automaticamente certas informações quando você visita nosso site, incluindo seu endereço IP, tipo de navegador, páginas visitadas e tempo de permanência.</p>
+<h2 class="font-bold text-base mt-6 mb-2">2. Como Usamos suas Informações</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Utilizamos as informações coletadas para:</p>
+<ul class="list-disc pl-5 text-sm text-gray-600 space-y-1 mb-3"><li>Processar e entregar seus pedidos</li><li>Enviar confirmações de pedidos e atualizações de envio</li><li>Responder às suas perguntas e solicitações</li><li>Melhorar nosso site e serviços</li><li>Enviar comunicações de marketing (com seu consentimento)</li><li>3. Compartilhamento de Informações</li></ul>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Não vendemos suas informações pessoais. Compartilhamos suas informações apenas com:</p>
+<ul class="list-disc pl-5 text-sm text-gray-600 space-y-1 mb-3"><li>Processadores de pagamento para completar transações</li><li>Empresas de logística para entrega de pedidos</li><li>Prestadores de serviços que nos auxiliam na operação do site</li><li>4. Segurança dos Dados</li></ul>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Implementamos medidas de segurança técnicas e organizacionais para proteger suas informações contra acesso não autorizado, alteração, divulgação ou destruição.</p>
+<h2 class="font-bold text-base mt-6 mb-2">5. Seus Direitos</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">De acordo com a Lei Geral de Proteção de Dados (LGPD), você tem direito a:</p>
+<ul class="list-disc pl-5 text-sm text-gray-600 space-y-1 mb-3"><li>Acessar seus dados pessoais</li><li>Corrigir dados incompletos ou incorretos</li><li>Solicitar a exclusão de seus dados</li><li>Revogar seu consentimento a qualquer momento</li><li>6. Contato</li></ul>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Para dúvidas sobre esta política ou para exercer seus direitos, entre em contato conosco:</p>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">E-mail: <span data-store="email"></span><br/><span data-store="company"></span><br/>CNPJ: <span data-store="cnpj"></span></p>
+</div>
+<script src="js/config.js"></script>
+<script>
+  const S = window.STORE, map = { email: S.email, company: S.company, cnpj: S.cnpj };
+  document.querySelectorAll("[data-store]").forEach((el) => (el.textContent = map[el.dataset.store] || ""));
+</script>
+</body>
+</html>

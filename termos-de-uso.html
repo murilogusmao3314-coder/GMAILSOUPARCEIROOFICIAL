@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Termos de Uso</title>
+  <link rel="icon" href="assets/favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="max-w-md mx-auto min-h-screen px-5 py-4">
+  <a href="index.html" class="inline-flex items-center gap-2 text-sm text-gray-600 mb-4">← Voltar</a>
+  <h1 class="text-xl font-extrabold mb-1">Termos de Uso</h1>
+  <p class="text-xs text-gray-400 mb-4">Última atualização: Fevereiro de 2025</p>
+<h2 class="font-bold text-base mt-6 mb-2">1. Aceitação dos Termos</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Ao acessar e usar este site, você aceita e concorda em cumprir estes Termos de Uso. Se você não concordar com qualquer parte destes termos, não deve usar nosso site.</p>
+<h2 class="font-bold text-base mt-6 mb-2">2. Uso do Site</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Você concorda em usar este site apenas para fins legais e de maneira que não:</p>
+<ul class="list-disc pl-5 text-sm text-gray-600 space-y-1 mb-3"><li>Viole qualquer lei ou regulamento aplicável</li><li>Infrinja os direitos de terceiros</li><li>Interfira no funcionamento adequado do site</li><li>Tente acessar áreas restritas do site sem autorização</li><li>3. Produtos e Preços</li></ul>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Nos esforçamos para garantir que as informações sobre produtos e preços sejam precisas. No entanto, erros podem ocorrer. Reservamo-nos o direito de corrigir quaisquer erros e alterar preços a qualquer momento sem aviso prévio.</p>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Todas as ofertas estão sujeitas à disponibilidade de estoque. Reservamo-nos o direito de limitar quantidades ou recusar pedidos a nosso critério.</p>
+<h2 class="font-bold text-base mt-6 mb-2">4. Propriedade Intelectual</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Todo o conteúdo deste site, incluindo textos, imagens, logotipos e design, é propriedade da <span data-store="company"></span> e está protegido por leis de direitos autorais.</p>
+<h2 class="font-bold text-base mt-6 mb-2">5. Limitação de Responsabilidade</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Não seremos responsáveis por quaisquer danos indiretos, incidentais, especiais ou consequenciais decorrentes do uso ou incapacidade de uso deste site.</p>
+<h2 class="font-bold text-base mt-6 mb-2">6. Modificações dos Termos</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Podemos modificar estes Termos de Uso a qualquer momento. As alterações entrarão em vigor imediatamente após a publicação no site. O uso contínuo do site após as alterações constitui sua aceitação dos novos termos.</p>
+<h2 class="font-bold text-base mt-6 mb-2">7. Lei Aplicável</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Estes Termos de Uso são regidos pelas leis da República Federativa do Brasil. Qualquer disputa será resolvida nos tribunais da cidade sede da empresa.</p>
+<h2 class="font-bold text-base mt-6 mb-2">8. Contato</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Para dúvidas sobre estes termos, entre em contato:</p>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">E-mail: <span data-store="email"></span><br/><span data-store="company"></span><br/>CNPJ: <span data-store="cnpj"></span></p>
+</div>
+<script src="js/config.js"></script>
+<script>
+  const S = window.STORE, map = { email: S.email, company: S.company, cnpj: S.cnpj };
+  document.querySelectorAll("[data-store]").forEach((el) => (el.textContent = map[el.dataset.store] || ""));
+</script>
+</body>
+</html>

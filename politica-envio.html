@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Política de Envio</title>
+  <link rel="icon" href="assets/favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="max-w-md mx-auto min-h-screen px-5 py-4">
+  <a href="index.html" class="inline-flex items-center gap-2 text-sm text-gray-600 mb-4">← Voltar</a>
+  <h1 class="text-xl font-extrabold mb-1">Política de Envio</h1>
+  <p class="text-xs text-gray-400 mb-4">Última atualização: Fevereiro de 2025</p>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Frete Grátis</p>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Para todo o Brasil</p>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Envio Rápido</p>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">1-2 dias úteis</p>
+<h2 class="font-bold text-base mt-6 mb-2">1. Prazo de Envio</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Seu pedido será preparado e enviado em até 2 (dois) dias úteis após a confirmação do pagamento. O prazo de entrega varia de acordo com a região:</p>
+<ul class="list-disc pl-5 text-sm text-gray-600 space-y-1 mb-3"><li>Sudeste: 3 a 7 dias úteis</li><li>Sul e Centro-Oeste: 5 a 10 dias úteis</li><li>Nordeste: 7 a 12 dias úteis</li><li>Norte: 10 a 15 dias úteis</li><li>2. Frete Grátis</li></ul>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Oferecemos frete grátis para todo o território nacional em todas as compras realizadas em nosso site. Esta promoção pode ser alterada sem aviso prévio.</p>
+<h2 class="font-bold text-base mt-6 mb-2">3. Rastreamento</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Após o envio, você receberá um e-mail com o código de rastreamento. Você poderá acompanhar a entrega diretamente no site dos Correios ou da transportadora.</p>
+<h2 class="font-bold text-base mt-6 mb-2">4. Endereço de Entrega</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Certifique-se de que o endereço de entrega está correto e completo. Não nos responsabilizamos por atrasos ou devoluções causados por informações incorretas.</p>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Caso não haja ninguém para receber o produto, a transportadora poderá deixar com um vizinho ou realizar nova tentativa de entrega.</p>
+<h2 class="font-bold text-base mt-6 mb-2">5. Problemas na Entrega</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">Em caso de problemas com a entrega (produto danificado, extravio, etc.), entre em contato conosco imediatamente pelo e-mail <span data-store="email"></span>.</p>
+<h2 class="font-bold text-base mt-6 mb-2">6. Contato</h2>
+<p class="text-sm text-gray-600 leading-relaxed mb-3">E-mail: <span data-store="email"></span><br/><span data-store="company"></span><br/>CNPJ: <span data-store="cnpj"></span></p>
+</div>
+<script src="js/config.js"></script>
+<script>
+  const S = window.STORE, map = { email: S.email, company: S.company, cnpj: S.cnpj };
+  document.querySelectorAll("[data-store]").forEach((el) => (el.textContent = map[el.dataset.store] || ""));
+</script>
+</body>
+</html>

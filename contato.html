@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="icon" href="assets/favicon.ico" /><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" /><link rel="stylesheet" href="css/style.css" /><title>Contato</title></head>
+<body><div class="max-w-md mx-auto min-h-screen px-5 py-4">
+  <a href="index.html" class="inline-flex items-center gap-2 text-sm text-gray-600 mb-4">← Voltar</a>
+  <h1 class="text-xl font-extrabold mb-1">Entre em Contato</h1>
+  <p class="text-sm text-gray-600 mb-5">Estamos aqui para ajudar! Entre em contato conosco por qualquer um dos canais abaixo.</p>
+  <div class="space-y-3 text-sm" id="cards"></div>
+</div>
+<script src="js/config.js"></script>
+<script>
+const S = window.STORE;
+const cards = [["✉️","E-mail","Resposta em até 24h",S.email],["💬","WhatsApp","Atendimento rápido",S.whatsapp],["📞","Telefone","Seg-Sex, 9h às 18h",S.phone],["🕘","Horário","Atendimento",S.hours],["📍","Endereço",S.company,S.address+"<br/>CNPJ: "+S.cnpj]];
+document.getElementById("cards").innerHTML = cards.map(([i,t,s,v]) => '<div class="rounded-xl border border-gray-200 p-4 flex gap-3"><span class="text-xl">'+i+'</span><div><p class="font-semibold">'+t+'</p><p class="text-xs text-gray-500">'+s+'</p><p class="mt-1 text-gray-800">'+v+'</p></div></div>').join("");
+</script></body></html>

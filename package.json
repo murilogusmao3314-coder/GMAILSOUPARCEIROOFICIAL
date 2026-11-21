@@ -1,0 +1,11 @@
+{
+  "name": "loja-armarios",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -c tailwind.config.js -i src/input.css -o css/style.css --minify",
+    "start": "node server.js"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}

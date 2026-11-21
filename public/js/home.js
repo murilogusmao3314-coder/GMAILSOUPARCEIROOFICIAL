@@ -5,7 +5,6 @@ $("#compare").textContent = brl(P.comparePrice);
 $("#off").textContent = "-" + Math.round((1 - P.price / P.comparePrice) * 100) + "%";
 $("#installments").textContent = `${P.installments}x de ${brl(Math.round(P.price / P.installments))} sem juros no cartão`;
 $("#store-name").textContent = S.name;
-$("#store-initials").textContent = S.name.split(" ").map((w) => w[0]).join("").slice(0, 3).toUpperCase();
 $("#footer").innerHTML = footerHTML();
 
 // Contador regressivo até o fim do dia (não reinicia sozinho)
@@ -62,12 +61,12 @@ const REVIEWS = [
   ["Patrícia G.", "03 Fev 2026", "Lindo! Coloquei na sala perto da TV e ficou super elegante. Ótimo acabamento.", 17],
   ["Thiago N.", "29 Jan 2026", "Muito bom pro preço. Uso pra guardar ferramentas na garagem e aguenta bem o peso. Recomendo.", 12],
 ];
-$("#reviews").innerHTML = REVIEWS.map(([n, d, t, u]) => `
+$("#reviews").innerHTML = REVIEWS.map(([n, d, t, u], i) => `
   <div class="pb-4 mb-4 border-b border-gray-100">
     <div class="flex justify-between"><b class="text-sm">${n}</b><span class="text-xs text-gray-400">${d}</span></div>
     <div class="text-yellow-400 my-1">★★★★★</div>
     <p class="text-sm text-gray-600 leading-relaxed">${t}</p>
-    <p class="text-xs text-gray-500 mt-2">Útil (${u})</p>
+    <div class="flex items-center gap-3 mt-3"><img src="/assets/review-${i + 1}.webp" loading="lazy" alt="Foto enviada por ${n}" class="h-16 w-16 rounded-lg object-cover border border-gray-100"/><span class="text-xs text-gray-500">Útil (${u})</span></div>
   </div>`).join("");
 
 // FAQ

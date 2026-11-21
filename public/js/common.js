@@ -88,3 +88,15 @@ document.addEventListener("click", (e) => {
   if (!h || h.startsWith("#") || /^(mailto:|tel:|javascript:)/i.test(h)) return;
   a.setAttribute("href", withUtms(h));
 }, true);
+
+// "Receba entre 24 e 26 de novembro" (dias corridos a partir de hoje; usa o mês em que a pessoa entrou)
+const MESES_PT = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+function etaRangeText(minDays, maxDays) {
+  const base = new Date(); base.setHours(12, 0, 0, 0);
+  const at = (n) => { const d = new Date(base); d.setDate(d.getDate() + n); return d; };
+  const a = at(minDays), b = at(maxDays);
+  return a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear()
+    ? `Receba entre ${a.getDate()} e ${b.getDate()} de ${MESES_PT[b.getMonth()]}`
+    : `Receba entre ${a.getDate()} de ${MESES_PT[a.getMonth()]} e ${b.getDate()} de ${MESES_PT[b.getMonth()]}`;
+}
+const shipEta = (s) => (s.etaDays ? etaRangeText(s.etaDays.min, s.etaDays.max) : s.eta || "");

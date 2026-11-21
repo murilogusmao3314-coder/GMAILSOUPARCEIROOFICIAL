@@ -25,11 +25,13 @@ window.STORE = {
   // a partir do dia em que a pessoa entra no site. Use os números do prazo REAL de entrega.
   delivery: { minBusinessDays: 5, maxBusinessDays: 8 },
 
-  // Opções de envio (centavos)
+  // Opções de envio no checkout (preço em centavos). A 1ª da lista vem marcada.
+  //  eta     = texto fixo do prazo
+  //  etaDays = prazo em DIAS CORRIDOS a partir de hoje, mostrado como data ("Receba entre 24 e 26 de novembro")
   shipping: [
-    { id: "correios", name: "Frete Correios", eta: "7 a 15 dias úteis", price: 0 },
-    { id: "jadlog", name: "Frete JadLog", eta: "3 a 6 dias úteis", price: 853 },
-    { id: "completo", name: "Frete Completo", eta: "1 a 3 dias úteis", price: 1473 },
+    { id: "jadlog", name: "Frete JadLog", eta: "5 a 8 dias úteis", price: 0 },
+    { id: "correios", name: "Frete Correios", etaDays: { min: 2, max: 4 }, price: 853 },
+    { id: "completo", name: "Frete Full", eta: "Receba amanhã", price: 2353 },
   ],
 
   // Produtos extras opcionais no checkout ("Leve junto"). Deixe [] para desativar.

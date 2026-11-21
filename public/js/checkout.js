@@ -58,7 +58,7 @@ function render() {
   $("#saving").textContent = `Você está economizando ${brl(disc)} nesse pedido.`;
   $("#ship").innerHTML = S.shipping.map((s) => `<button type="button" data-id="${s.id}" class="w-full text-left flex items-center gap-3 rounded-xl border p-3 ${s.id === shipId ? "border-red-600 bg-red-50" : "border-gray-200"}">
     <span class="h-5 w-5 rounded-full border-2 flex items-center justify-center ${s.id === shipId ? "border-red-600" : "border-gray-300"}">${s.id === shipId ? '<span class="h-2.5 w-2.5 rounded-full bg-red-600"></span>' : ""}</span>
-    <span class="flex-1"><b class="block text-sm font-medium">${s.name}</b><span class="text-xs text-gray-500">${s.eta}</span></span>
+    <span class="flex-1"><b class="block text-sm font-medium">${s.name}</b><span class="text-xs text-gray-500">${shipEta(s)}</span></span>
     <b class="text-sm ${s.price ? "" : "text-green-600"}">${s.price ? brl(s.price) : "Grátis"}</b></button>`).join("");
   $$("#ship button").forEach((b) => (b.onclick = () => { shipId = b.dataset.id; render(); }));
   if (!S.bumps.length) $("#bumps-wrap").remove(); else $("#bumps").innerHTML = S.bumps.map((b) => `<label class="flex items-center gap-3 rounded-xl border border-gray-200 p-2 cursor-pointer"><img src="${b.image}" class="h-16 w-16 rounded object-cover" alt=""/><span class="flex-1 text-xs"><span class="block text-gray-800 leading-snug">${b.name}</span><b class="text-sm">${brl(b.price)}</b> <span class="text-[11px] bg-green-100 text-green-700 rounded px-1.5 py-0.5">🛒 adicionar ao pedido</span></span><input type="checkbox" data-id="${b.id}" class="h-5 w-5" ${bumps.includes(b.id) ? "checked" : ""}/></label>`).join("");

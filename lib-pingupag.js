@@ -22,7 +22,7 @@ export async function pingu(path, init = {}) {
 export const PRICING = {
   productPrice: 7790,
   maxQty: 10,
-  shipping: { correios: 0, jadlog: 853, completo: 1473 },
+  shipping: { jadlog: 0, correios: 853, completo: 2353 },
   bumps: { panelas: 4890, potes: 2187, turbochef: 4489 },
 };
 // Nomes exibidos no painel (PinguPag/UTMify). Mantenha igual aos de public/js/common.js e config.js
@@ -34,7 +34,7 @@ export const BUMP_NAMES = {
   panelas: "Conjunto de Panelas LIFE SMILE 29 Peças", potes: "Potes Organizadores 16 Peças", turbochef: "Kit Panela Pressão TurboChef",
 };
 export const UPSELL = { id: "upsell-kit-cozinha", name: "Kit Cozinha Completa (3 produtos)", price: 5990 }; // igual a STORE.upsell em config.js
-export const SHIPPING_NAMES = { correios: "Frete Correios", jadlog: "Frete JadLog", completo: "Frete Completo" };
+export const SHIPPING_NAMES = { jadlog: "Frete JadLog", correios: "Frete Correios", completo: "Frete Full" };
 
 // Ex.: "Armário Multifuncional - 2 Pretos e 2 Brancos (2 kits) + Panelas LIFE SMILE | Frete Correios"
 export function orderTitle({ color, quantity, extras, shippingOption }) {

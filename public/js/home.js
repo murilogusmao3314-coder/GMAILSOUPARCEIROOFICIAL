@@ -8,19 +8,20 @@ $("#store-name").textContent = S.name;
 $("#footer").innerHTML = footerHTML();
 track("ViewContent", { content_ids: [PRODUCT_ID], content_type: "product", content_name: P.shortTitle, value: P.price / 100, currency: "BRL" });
 
-// Contador regressivo até o FIM REAL da promoção (STORE.promoEndsAt). Sem data (ou data passada): fica escondido.
-const promoEnd = S.promoEndsAt ? Date.parse(S.promoEndsAt) : NaN;
-if (Number.isFinite(promoEnd) && promoEnd > Date.now()) {
-  $("#timer").style.display = "";
+// Contador regressivo. Se STORE.promoEndsAt tiver uma data (fim real da promoção), conta até ela;
+// sem data, conta até o fim do dia de hoje.
+(function countdown() {
+  const fixed = S.promoEndsAt ? Date.parse(S.promoEndsAt) : NaN;
   const pad = (n) => String(n).padStart(2, "0");
+  const endOf = () => (Number.isFinite(fixed) ? fixed : new Date().setHours(23, 59, 59, 999));
+  $("#timer").style.display = "";
   const tick = () => {
-    const d = Math.max(0, Math.floor((promoEnd - Date.now()) / 1000));
-    if (!d) { $("#timer").style.display = "none"; return; }
-    const h = Math.floor(d / 3600);
-    $("#t-h").textContent = pad(h); $("#t-m").textContent = pad(Math.floor((d % 3600) / 60)); $("#t-s").textContent = pad(d % 60);
+    const d = Math.max(0, Math.floor((endOf() - Date.now()) / 1000));
+    $("#t-h").textContent = pad(Math.floor(d / 3600)); $("#t-m").textContent = pad(Math.floor((d % 3600) / 60)); $("#t-s").textContent = pad(d % 60);
   };
   tick(); setInterval(tick, 1000);
-}
+})();
+
 
 // Galeria
 const gal = $("#gallery"), imgs = $$("img", gal);

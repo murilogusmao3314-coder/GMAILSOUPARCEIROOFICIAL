@@ -15,6 +15,6 @@ if (!pix || !pix.pixCode) { $("#empty").classList.remove("hidden"); } else {
   tick(); setInterval(tick, 1000);
   // Confirmação automática (se o seu backend expõe o status)
   if (S.PIX_STATUS_ENDPOINT && pix.externalRef) setInterval(async () => {
-    try { const j = await (await fetch(`${S.PIX_STATUS_ENDPOINT}?ref=${encodeURIComponent(pix.externalRef)}`)).json(); if (j.paid) location.href = "obrigado.html"; } catch {}
+    try { const j = await (await fetch(`${S.PIX_STATUS_ENDPOINT}?ref=${encodeURIComponent(pix.externalRef)}`)).json(); if (j.paid) location.href = "/obrigado"; } catch {}
   }, 5000);
 }

@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="icon" href="assets/favicon.ico" /><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" /><link rel="stylesheet" href="css/style.css" /><title>Pagamento Pix</title></head>
+<html lang="pt-BR"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="icon" href="/assets/favicon.ico" /><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" /><link rel="stylesheet" href="/css/style.css" /><title>Pagamento Pix</title></head>
 <body class="bg-gray-50">
 <div class="max-w-md mx-auto min-h-screen flex flex-col">
   <div class="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
-    <a href="checkout.html" class="p-1 text-gray-700"><span id="ic-back"></span></a>
+    <a href="/checkout" class="p-1 text-gray-700"><span id="ic-back"></span></a>
     <h1 class="flex-1 text-center text-[15px] font-semibold text-gray-900 pr-6">Pagamento</h1>
   </div>
   <div id="empty" class="hidden flex-1 flex flex-col items-center justify-center p-6 text-center">
-    <p class="mb-3 text-gray-600">Nenhum pagamento encontrado.</p><a href="index.html" class="text-red-600 font-medium text-sm">Voltar à loja</a>
+    <p class="mb-3 text-gray-600">Nenhum pagamento encontrado.</p><a href="/" class="text-red-600 font-medium text-sm">Voltar à loja</a>
   </div>
   <main id="main" class="hidden p-4 space-y-4">
     <div class="flex items-start justify-between">
@@ -15,7 +15,7 @@
       <div class="text-right"><p class="text-sm text-gray-500">Expira em</p><p class="text-[22px] font-extrabold tabular-nums" id="clock">15:00</p></div>
     </div>
     <div class="bg-white rounded-2xl shadow border border-gray-100 p-5">
-      <div class="flex items-center gap-2 mb-4"><img src="assets/pix-icon.png" class="h-5 w-5" alt=""/><p class="text-sm font-bold">Pague com Pix</p></div>
+      <div class="flex items-center gap-2 mb-4"><img src="/assets/pix-icon.png" class="h-5 w-5" alt=""/><p class="text-sm font-bold">Pague com Pix</p></div>
       <div id="qr" class="flex justify-center mb-5"></div>
       <p class="text-[15px] font-mono font-semibold leading-relaxed mb-5 break-all" id="code"></p>
       <button id="copy" class="w-full rounded-full py-3.5 text-sm font-bold text-white bg-red-600 active:opacity-90">Copiar código Pix</button>
@@ -24,5 +24,5 @@
     <div class="bg-white rounded-2xl shadow border border-gray-100 p-5"><p class="text-[15px] font-bold mb-2">Como fazer pagamentos com PIX?</p><p class="text-sm text-gray-500">Copie o código de pagamento acima, selecione Pix no seu app de internet ou de banco e cole o código.</p></div>
   </main>
 </div>
-<script src="js/config.js"></script><script src="js/common.js"></script><script src="js/pix.js"></script>
+<script src="/js/config.js"></script><script src="/js/common.js"></script><script src="/js/pix.js"></script>
 </body></html>

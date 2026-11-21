@@ -26,9 +26,9 @@ window.STORE = {
 
   // Produtos extras opcionais no checkout ("Leve junto"). Deixe [] para desativar.
   bumps: [
-    { id: "panelas", name: "Conjunto de Panelas LIFE SMILE 29 Peças Granito Antiaderente", price: 4890, image: "assets/bump-panelas.jpg" },
-    { id: "potes", name: "Potes Plásticos Organizadores 16 Peças Herméticos Cozinha", price: 2187, image: "assets/bump-potes.jpg" },
-    { id: "turbochef", name: "Kit Panela Pressão TurboChef (2 Panelas de 6L)", price: 4489, image: "assets/bump-turbochef.jpg" },
+    { id: "panelas", name: "Conjunto de Panelas LIFE SMILE 29 Peças Granito Antiaderente", price: 4890, image: "/assets/bump-panelas.jpg" },
+    { id: "potes", name: "Potes Plásticos Organizadores 16 Peças Herméticos Cozinha", price: 2187, image: "/assets/bump-potes.jpg" },
+    { id: "turbochef", name: "Kit Panela Pressão TurboChef (2 Panelas de 6L)", price: 4489, image: "/assets/bump-turbochef.jpg" },
   ],
 
   // Integração de pagamento Pix (SEU backend/gateway). Veja o README.

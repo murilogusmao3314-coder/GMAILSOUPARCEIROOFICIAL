@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Checkout</title>
-  <link rel="icon" href="assets/favicon.ico" />
+  <link rel="icon" href="/assets/favicon.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body class="bg-gray-50">
 <div class="max-w-md mx-auto min-h-screen pb-40 overflow-x-hidden">
   <div class="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
-    <button onclick="history.length>1?history.back():location.href='index.html'" class="p-1 text-gray-700" aria-label="Voltar"><span id="ic-back"></span></button>
+    <button onclick="history.length>1?history.back():location.href='/'" class="p-1 text-gray-700" aria-label="Voltar"><span id="ic-back"></span></button>
     <div class="flex-1 text-center">
       <h1 class="text-base font-semibold text-gray-800">Resumo do pedido</h1>
       <p class="text-xs text-emerald-600 flex items-center justify-center gap-1"><span id="ic-shield"></span> Seus dados estão seguros conosco</p>
@@ -77,8 +77,8 @@
 
   <section class="bg-white px-4 py-4 mt-2">
     <p class="font-semibold text-sm mb-3">Forma de pagamento</p>
-    <div class="flex items-center justify-between"><div class="flex items-center gap-2 text-sm"><img src="assets/pix-icon.png" class="h-5 w-5" alt=""/>Pix</div><span class="h-5 w-5 rounded-full border-2 border-red-600 flex items-center justify-center"><span class="h-2.5 w-2.5 rounded-full bg-red-600"></span></span></div>
-    <p class="text-[11px] text-gray-500 mt-4 pt-4 border-t border-gray-100">Ao fazer um pedido, você concorda com os <a class="font-bold text-gray-700" href="termos-de-uso.html">Termos de uso e venda</a> e reconhece que leu e concorda com a <a class="font-bold text-gray-700" href="politica-de-privacidade.html">Política de privacidade</a>.</p>
+    <div class="flex items-center justify-between"><div class="flex items-center gap-2 text-sm"><img src="/assets/pix-icon.png" class="h-5 w-5" alt=""/>Pix</div><span class="h-5 w-5 rounded-full border-2 border-red-600 flex items-center justify-center"><span class="h-2.5 w-2.5 rounded-full bg-red-600"></span></span></div>
+    <p class="text-[11px] text-gray-500 mt-4 pt-4 border-t border-gray-100">Ao fazer um pedido, você concorda com os <a class="font-bold text-gray-700" href="/termos-de-uso">Termos de uso e venda</a> e reconhece que leu e concorda com a <a class="font-bold text-gray-700" href="/politica-de-privacidade">Política de privacidade</a>.</p>
   </section>
   <p class="px-4 py-4 text-sm text-green-700 font-medium">😊 <span id="saving"></span></p>
   <div class="px-4 space-y-4">
@@ -92,8 +92,8 @@
   </div></div>
 </div>
 <style>.inp{width:100%;height:42px;border:1px solid #e5e7eb;border-radius:8px;padding:0 12px;font-size:14px;background:#fff;outline:none}.inp:focus{border-color:#e60000}.inp.bad{border-color:#e60000}</style>
-<script src="js/config.js"></script>
-<script src="js/common.js"></script>
-<script src="js/checkout.js"></script>
+<script src="/js/config.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/checkout.js"></script>
 </body>
 </html>

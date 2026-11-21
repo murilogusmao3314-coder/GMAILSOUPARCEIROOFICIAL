@@ -8,12 +8,12 @@ const store = {
 };
 
 const VARIANTS = {
-  "2-pretos": { label: "2 Pretos", qty: 1, img: "assets/variant-2-pretos.jpg" },
-  "2-brancos": { label: "2 Brancos", qty: 1, img: "assets/variant-2-brancos.jpg" },
-  "1-preto-1-branco": { label: "1 Preto e 1 Branco", qty: 1, img: "assets/variant-1-preto-1-branco.jpg" },
-  "4-pretos": { label: "4 Pretos", qty: 2, img: "assets/variant-4-pretos.jpg" },
-  "4-brancos": { label: "4 Brancos", qty: 2, img: "assets/variant-4-brancos.jpg" },
-  "2-pretos-2-brancos": { label: "2 Pretos e 2 Brancos", qty: 2, img: "assets/variant-2-pretos-2-brancos.jpg" },
+  "2-pretos": { label: "2 Pretos", qty: 1, img: "/assets/variant-2-pretos.jpg" },
+  "2-brancos": { label: "2 Brancos", qty: 1, img: "/assets/variant-2-brancos.jpg" },
+  "1-preto-1-branco": { label: "1 Preto e 1 Branco", qty: 1, img: "/assets/variant-1-preto-1-branco.jpg" },
+  "4-pretos": { label: "4 Pretos", qty: 2, img: "/assets/variant-4-pretos.jpg" },
+  "4-brancos": { label: "4 Brancos", qty: 2, img: "/assets/variant-4-brancos.jpg" },
+  "2-pretos-2-brancos": { label: "2 Pretos e 2 Brancos", qty: 2, img: "/assets/variant-2-pretos-2-brancos.jpg" },
 };
 
 const icon = {
@@ -29,13 +29,13 @@ function footerHTML() {
     <div class="grid grid-cols-3 gap-4 mb-5">
       <div><p class="font-semibold text-gray-800 mb-2">Compre</p><p class="mb-1">Mais vendidos</p><p>Novidades</p></div>
       <div><p class="font-semibold text-gray-800 mb-2">Sobre</p><p class="mb-1">Sobre nós</p><p>Carreiras</p></div>
-      <div><p class="font-semibold text-gray-800 mb-2">Suporte</p><a class="block mb-1" href="contato.html">Central de Ajuda</a><a href="contato.html">Contato</a></div>
+      <div><p class="font-semibold text-gray-800 mb-2">Suporte</p><a class="block mb-1" href="/contato">Central de Ajuda</a><a href="/contato">Contato</a></div>
     </div>
     <div class="mb-4"><p class="font-semibold text-gray-800 mb-2">Política &amp; Legal</p>
-      <a class="block mb-1" href="politica-de-privacidade.html">Política de privacidade</a>
-      <a class="block mb-1" href="termos-de-uso.html">Termos de uso</a>
-      <a class="block mb-1" href="trocas-e-devolucoes.html">Trocas e devoluções</a>
-      <a class="block" href="politica-envio.html">Política de envio</a></div>
+      <a class="block mb-1" href="/politica-de-privacidade">Política de privacidade</a>
+      <a class="block mb-1" href="/termos-de-uso">Termos de uso</a>
+      <a class="block mb-1" href="/trocas-e-devolucoes">Trocas e devoluções</a>
+      <a class="block" href="/politica-envio">Política de envio</a></div>
     <p class="text-center">© ${new Date().getFullYear()} ${S.name}. ${S.company} — CNPJ ${S.cnpj}</p>
   </footer>`;
 }

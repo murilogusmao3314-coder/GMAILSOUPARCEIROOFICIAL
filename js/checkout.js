@@ -85,6 +85,6 @@ $("#buy").onclick = async () => {
     const j = await r.json();
     if (!r.ok || !j.success) throw new Error(j.error || "Erro ao gerar pagamento. Tente novamente.");
     store.set("pix", { ...j.data, total, email: payload.customer.email });
-    location.href = "pix.html";
+    location.href = "/pix";
   } catch (e) { showErr(e.message); btn.disabled = false; btn.textContent = "Fazer pedido"; }
 };

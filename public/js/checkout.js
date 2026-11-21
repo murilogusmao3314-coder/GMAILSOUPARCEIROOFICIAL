@@ -72,11 +72,20 @@ function validate() {
   $("#err").classList.add("hidden"); return true;
 }
 
+// fbp/fbc (cookies da Meta) para a API de Conversões casar a compra com o clique no anúncio
+function metaIds() {
+  const ck = (n) => (document.cookie.match(new RegExp("(?:^|; )" + n + "=([^;]*)")) || [])[1];
+  let fbc = ck("_fbc");
+  const fbclid = getUtms().fbclid;
+  if (!fbc && fbclid) fbc = `fb.1.${Date.now()}.${fbclid}`;
+  return { fbp: ck("_fbp") || "", fbc: fbc || "", sourceUrl: location.origin + "/checkout" };
+}
+
 $("#buy").onclick = async () => {
   if (!validate()) return;
   const total = render(), btn = $("#buy"), g = (id) => $("#" + id).value.trim();
   const payload = {
-    tracking: getUtms(), color: order.color, quantity: qty, amount: total, shippingOption: shipId, extras: bumps,
+    tracking: getUtms(), meta: metaIds(), color: order.color, quantity: qty, amount: total, shippingOption: shipId, extras: bumps,
     customer: { name: g("name"), email: g("email"), phone: digits(g("phone")), document: { number: digits(g("cpf")), type: "cpf" } },
     shipping: { street: g("street"), number: g("number"), complement: g("complement"), neighborhood: g("district"), city: g("city"), state: g("uf").toUpperCase(), zipCode: digits(g("cep")) },
   };

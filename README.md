@@ -49,3 +49,19 @@ Rotas de servidor (a chave secreta nunca vai para o navegador):
 
 **Para ativar:** na Vercel, em *Settings → Environment Variables*, crie `PINGUPAG_API_KEY` com a sua Chave Secreta (painel PinguPag → "Configurações e API") e faça um novo deploy.
 Se mudar preços/frete/extras em `public/js/config.js`, atualize também `PRICING` em `lib-pingupag.js` (o servidor recusa pedidos com valor diferente).
+
+## Vendas na UTMify e na Meta (sem duplicar)
+**Quem envia o quê** — cada destino recebe a venda por UM único caminho:
+
+| Destino | Caminho | Como evita duplicar |
+|---|---|---|
+| UTMify | servidor → `POST api.utmify.com.br/api-credentials/orders` | `orderId` = referência do pedido (sempre o mesmo). Pedido criado = `waiting_payment`; ao pagar, o MESMO `orderId` vira `paid` (atualiza, não cria outro). `createdAt` é derivado da referência (idêntico nas duas chamadas). |
+| Meta | navegador (`fbq Purchase`) **+** servidor (API de Conversões) | os dois usam o MESMO `event_id` = `purchase-<referência>` → a Meta desduplica. O servidor garante a venda mesmo se o cliente fechar a página após pagar no app do banco. |
+
+Gatilho: o webhook da PinguPag (`/api/webhook?d=...`). O link tem assinatura (HMAC) gerada pelo site, e a venda só conta depois que a API da PinguPag confirma `approved` com o mesmo valor. O link carrega os UTMs, `fbp`, `fbc`, IP e navegador do clique original.
+
+**Checklist para NÃO duplicar (faça uma vez):**
+1. Na **PinguPag**: deixe a integração nativa com a UTMify **desligada** (senão a venda entra duas vezes).
+2. Na **UTMify**: no cadastro do Pixel da Meta, **não** deixe a UTMify enviar o evento `Purchase` para a Meta (o site já envia). Só uma fonte pode mandar o Purchase.
+3. Variáveis na Vercel: `UTMIFY_API_TOKEN`, `META_CAPI_TOKEN` (veja `.env.example`).
+4. Teste: use `META_TEST_EVENT_CODE` e confira no Gerenciador de Eventos que o Purchase aparece **uma vez** como "Navegador e servidor" (desduplicado). Na UTMify, confira que o pedido aparece **uma vez**, com campanha/conjunto/anúncio preenchidos.

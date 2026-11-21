@@ -1,4 +1,4 @@
-import { pingu, computeAmount, validCPF, PRODUCT_NAME } from "../../../lib-pingupag";
+import { pingu, computeAmount, validCPF, PRODUCT_NAME, newReference, signToken, sendUtmify, TRACK_KEYS } from "../../../lib-pingupag";
 
 export const dynamic = "force-dynamic";
 const str = (v, max = 120) => String(v ?? "").trim().slice(0, max);
@@ -24,10 +24,18 @@ export async function POST(req) {
   // Parâmetros de rastreamento aceitos pela PinguPag (UTMify)
   const t = b.tracking || {};
   const tracking = {};
-  for (const k of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "src", "sck"]) if (t[k]) tracking[k] = str(t[k], 300);
+  for (const k of TRACK_KEYS) if (t[k]) tracking[k] = str(t[k], 300);
 
-  const reference = `ARM-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+  const reference = newReference();
   const origin = new URL(req.url).origin;
+  const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || undefined;
+  const ua = req.headers.get("user-agent") || undefined;
+  const m = b.meta || {};
+  // Token assinado que viaja na postback_url: o webhook usa isto para mandar a venda ao UTMify/Meta
+  const tok = {
+    a: amount, q: Number(b.quantity), x: [...new Set(Array.isArray(b.extras) ? b.extras : [])], t: tracking,
+    fbp: str(m.fbp, 100) || undefined, fbc: str(m.fbc, 200) || undefined, u: str(m.sourceUrl, 300) || undefined, ip, ua: ua && ua.slice(0, 300),
+  };
 
   try {
     const { ok, status, json } = await pingu("/gateway/v1/transaction", {
@@ -36,7 +44,7 @@ export async function POST(req) {
         amount,
         description: PRODUCT_NAME,
         reference,
-        postback_url: `${origin}/api/webhook`,
+        postback_url: `${origin}/api/webhook?d=${encodeURIComponent(signToken({ ref: reference, ...tok }))}`,
         source: "api_externa",
         customer: { name, email, phone, document: doc },
         address: { street: str(a.street), number: str(a.number, 20), complement: str(a.complement), neighborhood: str(a.neighborhood), city: str(a.city), state: str(a.state, 2).toUpperCase(), zipcode: digits(a.zipCode) },
@@ -47,6 +55,9 @@ export async function POST(req) {
       console.error("PinguPag erro", status, JSON.stringify(json));
       return fail("Não foi possível gerar o Pix agora. Tente novamente em instantes.", 502);
     }
+    // UTMify: pedido criado (aguardando pagamento). Falha aqui NÃO impede o cliente de pagar.
+    try { await sendUtmify({ ref: reference, status: "waiting_payment", tok, customer: { name, email, phone, document: doc }, ip }); }
+    catch (e) { console.error("[utmify waiting_payment]", reference, e.message); }
     return Response.json({ success: true, data: { pixCode: json.qr_code, qrCodeImage: json.qr_code_base64 || null, externalRef: reference, expiresAt: json.expires_at || null } });
   } catch (e) {
     console.error("create-pix", e.message);

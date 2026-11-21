@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Política de Trocas e Devoluções</title>
-  <link rel="icon" href="assets/favicon.ico" />
+  <link rel="icon" href="/assets/favicon.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
 <div class="max-w-md mx-auto min-h-screen px-5 py-4">
-  <a href="index.html" class="inline-flex items-center gap-2 text-sm text-gray-600 mb-4">← Voltar</a>
+  <a href="/" class="inline-flex items-center gap-2 text-sm text-gray-600 mb-4">← Voltar</a>
   <h1 class="text-xl font-extrabold mb-1">Política de Trocas e Devoluções</h1>
   <p class="text-xs text-gray-400 mb-4">Última atualização: Fevereiro de 2025</p>
 <h2 class="font-bold text-base mt-6 mb-2">1. Direito de Arrependimento</h2>
@@ -29,7 +29,7 @@
 <h2 class="font-bold text-base mt-6 mb-2">7. Contato</h2>
 <p class="text-sm text-gray-600 leading-relaxed mb-3">E-mail: <span data-store="email"></span><br/><span data-store="company"></span><br/>CNPJ: <span data-store="cnpj"></span></p>
 </div>
-<script src="js/config.js"></script>
+<script src="/js/config.js"></script>
 <script>
   const S = window.STORE, map = { email: S.email, company: S.company, cnpj: S.cnpj };
   document.querySelectorAll("[data-store]").forEach((el) => (el.textContent = map[el.dataset.store] || ""));

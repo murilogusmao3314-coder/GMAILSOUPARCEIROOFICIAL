@@ -27,5 +27,5 @@ for slug, title in pages.items():
                 out.append('<p class="text-sm text-gray-600 leading-relaxed mb-3">' + "<br/>".join(sub(l) for l in lines) + "</p>")
             else:
                 out.append('<ul class="list-disc pl-5 text-sm text-gray-600 space-y-1 mb-3">' + "".join(f"<li>{sub(l)}</li>" for l in lines) + "</ul>")
-    (root / f"{slug}.html").write_text(tpl.replace("{{TITLE}}", title).replace("{{BODY}}", "\n".join(out)))
+    (root / "public" / f"{slug}.html").write_text(tpl.replace("{{TITLE}}", title).replace("{{BODY}}", "\n".join(out)))
 print("ok")

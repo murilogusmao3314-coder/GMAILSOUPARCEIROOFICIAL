@@ -98,5 +98,5 @@ $("#sheet-close").onclick = close; $("#sheet-bg").onclick = close;
 $("#sheet-buy").onclick = () => {
   if (!pick) return;
   store.set("order", { color: pick, qty: VARIANTS[pick].qty });
-  location.href = "checkout.html";
+  location.href = "/checkout";
 };

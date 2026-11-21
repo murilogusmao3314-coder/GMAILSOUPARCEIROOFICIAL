@@ -10,11 +10,12 @@ nem cronômetros/ameaças falsas. O contador da home termina no fim do dia e nã
 ## Rodar
 ```bash
 npm install
-npm start          # http://localhost:3000
+npm run dev        # http://localhost:3000
 npm run build:css  # recompila o Tailwind após mexer em classes
 ```
+Projeto Next.js (compatível com v0/Vercel): as páginas ficam em `public/` e `next.config.js` serve `/`, `/checkout` etc. sem `.html`.
 
-## O que você precisa editar — `js/config.js`
+## O que você precisa editar — `public/js/config.js`
 - Nome da loja, e-mail, telefone, razão social, CNPJ, endereço (aparecem em contato, rodapé e políticas). Já preenchido com os dados da Casa Fácil / RCS Sports Management & Solutions LTDA.
 - Preço, preço "de" (use só um preço realmente praticado), frete e produtos extras.
 - **Pix**: o front chama `PIX_ENDPOINT` (seu backend/gateway) com um POST JSON e espera

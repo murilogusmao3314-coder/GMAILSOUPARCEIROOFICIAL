@@ -2,8 +2,15 @@
   "name": "loja-armarios",
   "private": true,
   "scripts": {
-    "build:css": "tailwindcss -c tailwind.config.js -i src/input.css -o css/style.css --minify",
-    "start": "node server.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "build:css": "tailwindcss -c tailwind.config.js -i src/input.css -o public/css/style.css --minify"
+  },
+  "dependencies": {
+    "next": "14.2.35",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   },
   "devDependencies": {
     "tailwindcss": "3.4.17"

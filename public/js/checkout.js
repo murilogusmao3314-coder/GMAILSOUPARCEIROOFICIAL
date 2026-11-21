@@ -1,4 +1,4 @@
-$("#ic-back").innerHTML = icon.back; $("#ic-shield").innerHTML = icon.shield; $("#ic-pin").innerHTML = icon.pin;
+$("#ic-back").innerHTML = icon.back; $("#ic-shield").innerHTML = icon.shield;
 const order = store.get("order") || { color: "2-pretos", qty: 1 };
 if (!VARIANTS[order.color]) order.color = "2-pretos";
 let qty = order.qty || 1, shipId = S.shipping[0].id, bumps = [];
@@ -58,15 +58,15 @@ function validate() {
   const f = (id) => $("#" + id);
   const checks = [
     [f("name").value.trim().split(/\s+/).filter(Boolean).length >= 2, "Insira seu nome completo (nome e sobrenome)", "name"],
-    [digits(f("phone").value).length >= 10, "Insira um telefone válido com DDD", "phone"],
     [/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f("email").value.trim()), "Insira um e-mail válido", "email"],
+    [digits(f("phone").value).length >= 10, "Insira um telefone válido com DDD", "phone"],
+    [validCPF(f("cpf").value), "Insira um CPF válido", "cpf"],
     [digits(f("cep").value).length === 8, "Insira um CEP válido", "cep"],
     [f("uf").value.trim().length === 2, "Selecione o estado (UF)", "uf"],
     [f("city").value.trim(), "Insira a cidade", "city"],
     [f("district").value.trim(), "Insira o bairro", "district"],
     [f("street").value.trim(), "Insira o endereço", "street"],
     [f("number").value.trim(), "Insira o número", "number"],
-    [validCPF(f("cpf").value), "Insira um CPF válido", "cpf"],
   ];
   for (const [ok, msg, id] of checks) if (!ok) { showErr(msg, f(id)); return false; }
   $("#err").classList.add("hidden"); return true;
@@ -96,7 +96,7 @@ $("#buy").onclick = async () => {
     const r = await fetch(S.PIX_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
     const j = await r.json();
     if (!r.ok || !j.success) throw new Error(j.error || "Erro ao gerar pagamento. Tente novamente.");
-    store.set("pix", { ...j.data, total, email: payload.customer.email, qty: qty + bumps.length });
+    store.set("pix", { ...j.data, total, email: payload.customer.email, qty: qty + bumps.length, variant: VARIANTS[order.color].label, units: qty, shipName: S.shipping.find((s) => s.id === shipId).name });
     store.set("paid", null);
     trackCustom("PixGerado", evData(total));
     location.href = withUtms("/pix");

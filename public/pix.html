@@ -1,35 +1,103 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="icon" href="/assets/favicon.ico" /><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" /><link rel="stylesheet" href="/css/style.css" /><title>Pagamento Pix</title><script src="/js/pixel.js"></script>
+<html lang="pt-BR"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="icon" href="/assets/favicon.ico" /><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" /><link rel="stylesheet" href="/css/style.css" /><title>Pague com Pix</title><script src="/js/pixel.js"></script>
 <!-- UTMify: pixel (ID do painel) + script de UTMs -->
 <script>window.pixelId="6b0129f6a2e5630e45fa9e10";</script>
 <script async defer src="https://cdn.utmify.com.br/scripts/pixel/pixel.js"></script>
 <script src="https://cdn.utmify.com.br/scripts/utms/latest.js" data-utmify-prevent-xcod-sck data-utmify-prevent-subids async defer></script>
 
-<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1125182217062286&ev=PageView&noscript=1" alt=""/></noscript>
 </head>
 <body class="bg-gray-50">
-<div class="max-w-md mx-auto min-h-screen flex flex-col">
-  <div class="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
-    <a href="/checkout" class="p-1 text-gray-700"><span id="ic-back"></span></a>
-    <h1 class="flex-1 text-center text-[15px] font-semibold text-gray-900 pr-6">Pagamento</h1>
-  </div>
-  <div id="empty" class="hidden flex-1 flex flex-col items-center justify-center p-6 text-center">
-    <p class="mb-3 text-gray-600">Nenhum pagamento encontrado.</p><a href="/" class="text-red-600 font-medium text-sm">Voltar à loja</a>
-  </div>
-  <main id="main" class="hidden p-4 space-y-4">
-    <div class="flex items-start justify-between">
-      <div><p class="text-sm text-gray-500">Total a pagar</p><p class="text-[22px] font-extrabold" id="total"></p></div>
-      <div class="text-right"><p class="text-sm text-gray-500">Expira em</p><p class="text-[22px] font-extrabold tabular-nums" id="clock">15:00</p></div>
+<div class="max-w-md mx-auto min-h-screen pb-10">
+  <!-- Topo -->
+  <div class="bg-white border-b border-gray-200 px-4 py-3">
+    <div class="flex items-center justify-between">
+      <a href="/checkout" class="p-1 text-gray-700" aria-label="Voltar"><span id="ic-back"></span></a>
+      <p class="text-[15px] font-semibold text-gray-900">Pagamento via Pix</p>
+      <span class="w-7 text-emerald-600" title="Compra segura">🔒</span>
     </div>
-    <div class="bg-white rounded-2xl shadow border border-gray-100 p-5">
-      <div class="flex items-center gap-2 mb-4"><img src="/assets/pix-icon.png" class="h-5 w-5" alt=""/><p class="text-sm font-bold">Pague com Pix</p></div>
-      <div id="qr" class="flex justify-center mb-5"></div>
-      <p class="text-[15px] font-mono font-semibold leading-relaxed mb-5 break-all" id="code"></p>
-      <button id="copy" class="w-full rounded-full py-3.5 text-sm font-bold text-white bg-red-600 active:opacity-90">Copiar código Pix</button>
-      <p id="status" class="text-center text-xs text-gray-500 mt-4">Aguardando confirmação do pagamento…</p>
+    <!-- Etapas -->
+    <div class="flex items-center gap-2 mt-3 text-[11px] font-medium">
+      <div class="flex items-center gap-1.5 text-emerald-600"><span class="h-5 w-5 rounded-full bg-emerald-500 text-white flex items-center justify-center">✓</span>Pedido</div>
+      <div class="flex-1 h-0.5 bg-emerald-400"></div>
+      <div class="flex items-center gap-1.5 text-red-600"><span class="h-5 w-5 rounded-full bg-red-600 text-white flex items-center justify-center">2</span>Pagamento</div>
+      <div class="flex-1 h-0.5 bg-gray-200"></div>
+      <div class="flex items-center gap-1.5 text-gray-400"><span class="h-5 w-5 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center">3</span>Confirmado</div>
     </div>
-    <div class="bg-white rounded-2xl shadow border border-gray-100 p-5"><p class="text-[15px] font-bold mb-2">Como fazer pagamentos com PIX?</p><p class="text-sm text-gray-500">Copie o código de pagamento acima, selecione Pix no seu app de internet ou de banco e cole o código.</p></div>
+  </div>
+
+  <div id="empty" class="hidden p-8 text-center">
+    <p class="text-4xl mb-3">🧾</p>
+    <p class="font-semibold mb-1">Não encontramos um pagamento em andamento</p>
+    <p class="text-sm text-gray-500 mb-5">Volte à loja e finalize seu pedido para gerar o Pix.</p>
+    <a href="/" class="inline-block rounded-full bg-red-600 text-white font-bold text-sm px-8 py-3">Voltar à loja</a>
+  </div>
+
+  <main id="main" class="hidden px-4 pt-5 space-y-4">
+    <!-- Título -->
+    <div class="text-center">
+      <h1 class="text-[22px] font-extrabold text-gray-900 leading-tight">Falta só o pagamento! 🎉</h1>
+      <p class="text-sm text-gray-600 mt-1.5">Seu pedido foi reservado. Pague com Pix e a confirmação é <b>imediata</b>.</p>
+    </div>
+
+    <!-- Valor + tempo -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4 flex items-center justify-between">
+      <div><p class="text-xs text-gray-500">Valor a pagar</p><p class="text-2xl font-extrabold text-gray-900" id="total"></p></div>
+      <div id="timer-box" class="hidden text-right"><p class="text-xs text-gray-500">Código válido por</p><p class="text-2xl font-extrabold tabular-nums text-red-600" id="clock">--:--</p></div>
+    </div>
+
+    <!-- QR + copia e cola -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+      <div class="flex items-center gap-2 mb-4"><img src="/assets/pix-icon.png" class="h-5 w-5" alt=""/><p class="text-sm font-bold text-gray-900">Pague com QR Code</p></div>
+      <div class="flex justify-center mb-2">
+        <div class="p-3 rounded-2xl border-2 border-dashed border-gray-200 bg-white"><div id="qr" class="h-52 w-52 flex items-center justify-center text-xs text-gray-400">Gerando QR Code…</div></div>
+      </div>
+      <p class="text-center text-xs text-gray-500 mb-5">Abra o app do seu banco e escaneie com a câmera</p>
+
+      <div class="flex items-center gap-3 mb-4"><div class="flex-1 h-px bg-gray-200"></div><span class="text-xs text-gray-400 font-medium">ou use o Pix Copia e Cola</span><div class="flex-1 h-px bg-gray-200"></div></div>
+
+      <div class="rounded-xl bg-gray-50 border border-gray-200 px-3 py-3 mb-3"><p id="code" class="text-[13px] font-mono text-gray-700 break-all leading-snug max-h-16 overflow-hidden"></p></div>
+      <button id="copy" class="w-full rounded-xl py-4 text-[15px] font-bold text-white bg-emerald-600 active:bg-emerald-700 flex items-center justify-center gap-2">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        <span id="copy-label">Copiar código Pix</span>
+      </button>
+    </div>
+
+    <!-- Já paguei -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center">
+      <p class="text-sm font-semibold text-gray-900 mb-1">Já fez o pagamento?</p>
+      <p class="text-xs text-gray-500 mb-3">Normalmente confirmamos em poucos segundos.</p>
+      <button id="check" class="w-full rounded-xl py-3.5 text-[15px] font-bold text-red-600 border-2 border-red-600 active:bg-red-50 flex items-center justify-center gap-2">
+        <span id="check-spin" class="hidden h-4 w-4 rounded-full border-2 border-red-600 border-t-transparent animate-spin"></span><span id="check-label">Já paguei, verificar</span>
+      </button>
+      <p id="status" class="text-xs mt-3 text-gray-500 flex items-center justify-center gap-1.5"><span class="h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span><span id="status-text">Aguardando o pagamento…</span></p>
+    </div>
+
+    <!-- Mini tutorial -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+      <p class="text-[15px] font-bold text-gray-900 mb-4">Como pagar com o Pix Copia e Cola</p>
+      <ol class="space-y-4">
+        <li class="flex gap-3"><span class="h-7 w-7 shrink-0 rounded-full bg-red-600 text-white text-sm font-bold flex items-center justify-center">1</span><p class="text-sm text-gray-700 pt-0.5">Toque em <b>“Copiar código Pix”</b> aqui em cima.</p></li>
+        <li class="flex gap-3"><span class="h-7 w-7 shrink-0 rounded-full bg-red-600 text-white text-sm font-bold flex items-center justify-center">2</span><p class="text-sm text-gray-700 pt-0.5">Abra o <b>app do seu banco</b> e vá em <b>Pix</b>.</p></li>
+        <li class="flex gap-3"><span class="h-7 w-7 shrink-0 rounded-full bg-red-600 text-white text-sm font-bold flex items-center justify-center">3</span><p class="text-sm text-gray-700 pt-0.5">Escolha <b>“Pix Copia e Cola”</b> (ou “Pagar com código”) e <b>cole</b> o código.</p></li>
+        <li class="flex gap-3"><span class="h-7 w-7 shrink-0 rounded-full bg-red-600 text-white text-sm font-bold flex items-center justify-center">4</span><p class="text-sm text-gray-700 pt-0.5">Confira o valor e o nome do recebedor e <b>confirme</b> o pagamento.</p></li>
+        <li class="flex gap-3"><span class="h-7 w-7 shrink-0 rounded-full bg-emerald-500 text-white text-sm font-bold flex items-center justify-center">✓</span><p class="text-sm text-gray-700 pt-0.5">Pronto! Volte aqui: sua confirmação aparece <b>automaticamente</b>.</p></li>
+      </ol>
+      <div class="mt-4 rounded-xl bg-blue-50 border border-blue-100 p-3 text-xs text-blue-900 leading-relaxed">💡 <b>Pagando pelo celular?</b> Copie o código, abra o app do banco, pague e depois volte para esta página. Ou escaneie o QR Code com outro celular.</div>
+    </div>
+
+    <!-- Resumo -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-sm">
+      <p class="font-bold text-gray-900 mb-3">Resumo do pedido</p>
+      <div class="flex gap-3 items-center"><img id="s-img" class="h-14 w-14 rounded-lg object-cover bg-gray-100" alt=""/><div class="flex-1 min-w-0"><p class="text-gray-800 leading-snug" id="s-title"></p><p class="text-xs text-gray-500" id="s-var"></p></div></div>
+      <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between text-gray-600"><span id="s-ship"></span><span id="s-shipv" class="text-emerald-600"></span></div>
+      <div class="mt-2 flex justify-between font-bold text-gray-900"><span>Total</span><span id="s-total"></span></div>
+    </div>
+
+    <div class="flex items-center justify-center gap-4 text-[11px] text-gray-500 pt-1">
+      <span>🔒 Pagamento seguro</span><span>⚡ Aprovação imediata</span><span>📦 Entrega garantida</span>
+    </div>
+    <p class="text-center text-[11px] text-gray-400">Dúvidas? <a href="/contato" class="underline">Fale com a gente</a></p>
   </main>
 </div>
-<script src="/js/config.js"></script><script src="/js/common.js"></script><script src="/js/pix.js"></script>
+<script src="/js/config.js"></script><script src="/js/common.js"></script><script src="/js/qrcode.js"></script><script src="/js/pix.js"></script>
 </body></html>

@@ -1,4 +1,4 @@
-import { verifyToken, pingu, sendUtmify, sendMetaPurchase } from "../../../lib-pingupag";
+import { verifyToken, pingu, sendUtmify } from "../../../lib-pingupag";
 
 export const dynamic = "force-dynamic";
 
@@ -6,7 +6,8 @@ export const dynamic = "force-dynamic";
 // A garantia real contra duplicidade é o orderId fixo (UTMify) e o event_id fixo (Meta).
 const recent = globalThis.__recentWebhooks || (globalThis.__recentWebhooks = new Map());
 
-// Postback da PinguPag (POST). É o ÚNICO ponto que envia a venda PAGA ao UTMify e à Meta.
+// Postback da PinguPag (POST). É o ÚNICO ponto que envia a venda ao UTMify.
+// A Meta recebe o Purchase da própria UTMify (Pixel + API de Conversões com deduplicação) — não enviamos nada à Meta daqui.
 // - Só aceita chamadas com o token assinado (?d=...) que nós mesmos geramos na criação do Pix.
 // - Confirma o status direto na API da PinguPag antes de contar a venda.
 // - É idempotente: reenvios usam o mesmo orderId (UTMify) e o mesmo event_id (Meta) — não duplicam.
@@ -46,10 +47,6 @@ export async function POST(req) {
   try { await sendUtmify({ ref, status: utmStatus, tok, customer, ip: tok.ip, approvedAtMs, refundedAtMs: Date.now() }); }
   catch (e) { errors.push(e.message); console.error("[utmify]", ref, e.message); }
 
-  if (status === "approved") {
-    try { await sendMetaPurchase({ ref, tok, customer, address: p.address, ip: tok.ip, ua: tok.ua }); }
-    catch (e) { errors.push(e.message); console.error("[meta]", ref, e.message); }
-  }
   if (!errors.length) recent.set(dedupeKey, Date.now());
   // 500 => a PinguPag tenta de novo (seguro: tudo é idempotente)
   if (errors.length) return Response.json({ received: true, errors }, { status: 500 });

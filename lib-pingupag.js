@@ -45,12 +45,12 @@ export function validCPF(v) {
 }
 
 // =====================================================================
-// RASTREAMENTO: UTMify + Meta (API de Conversões) — enviados SÓ pelo servidor
+// RASTREAMENTO: venda -> UTMify (servidor). A UTMify repassa à Meta.
 // Regras anti-duplicação:
 //  * UTMify: orderId = reference do pedido (sempre o mesmo) e createdAt sempre igual.
 //    Pedido novo = "waiting_payment"; o mesmo orderId depois vira "paid" (atualiza, não cria outro).
-//  * Meta: Purchase tem event_id fixo "purchase-<reference>"; o navegador usa o MESMO eventID,
-//    então a Meta conta uma única compra (desduplica navegador + servidor).
+//  * Meta: NÃO enviamos nada à Meta daqui. A UTMify já dispara o Pixel + API de Conversões
+//    (com o ID de deduplicação dela). Qualquer Purchase extra nosso contaria em dobro.
 // =====================================================================
 import crypto from "crypto";
 
@@ -106,48 +106,6 @@ export async function sendUtmify({ ref, status, tok, customer, ip, approvedAtMs 
   const text = await res.text();
   if (!res.ok) throw new Error(`UTMify ${res.status}: ${text.slice(0, 300)}`);
   return { ok: true, status, orderId: ref };
-}
-
-// ---------- Meta Conversions API ----------
-export async function sendMetaPurchase({ ref, tok, customer, address, ip, ua }) {
-  const accessToken = process.env.META_CAPI_TOKEN;
-  if (!accessToken) return { skipped: "META_CAPI_TOKEN ausente" };
-  const pixelId = process.env.META_PIXEL_ID || "1125182217062286";
-  const digits = (v) => String(v || "").replace(/\D/g, "");
-  const names = String(customer.name || "").trim().split(/\s+/);
-  const user_data = {
-    em: customer.email ? [sha(customer.email)] : undefined,
-    ph: customer.phone ? [sha("55" + digits(customer.phone))] : undefined,
-    fn: names[0] ? [sha(names[0])] : undefined,
-    ln: names.length > 1 ? [sha(names[names.length - 1])] : undefined,
-    external_id: customer.document ? [sha(digits(customer.document))] : undefined,
-    ct: address?.city ? [sha(address.city.replace(/\s/g, ""))] : undefined,
-    st: address?.state ? [sha(address.state)] : undefined,
-    zp: address?.zipcode ? [sha(digits(address.zipcode))] : undefined,
-    country: [sha("br")],
-    client_ip_address: tok.ip || ip || undefined,
-    client_user_agent: tok.ua || ua || undefined,
-    fbp: tok.fbp || undefined,
-    fbc: tok.fbc || undefined,
-  };
-  Object.keys(user_data).forEach((k) => user_data[k] === undefined && delete user_data[k]);
-  const payload = {
-    data: [{
-      event_name: "Purchase",
-      event_time: Math.floor(Date.now() / 1000),
-      event_id: `purchase-${ref}`,          // MESMO eventID do navegador => Meta desduplica
-      action_source: "website",
-      event_source_url: tok.u || undefined,
-      user_data,
-      custom_data: { currency: "BRL", value: tok.a / 100, content_ids: [PRODUCT_ID], content_type: "product", num_items: tok.q + (tok.x?.length || 0), order_id: ref },
-    }],
-    ...(process.env.META_TEST_EVENT_CODE ? { test_event_code: process.env.META_TEST_EVENT_CODE } : {}),
-  };
-  const graph = (process.env.META_GRAPH_URL || "https://graph.facebook.com").replace(/\/$/, "");
-  const res = await fetch(`${graph}/v21.0/${pixelId}/events?access_token=${encodeURIComponent(accessToken)}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload), cache: "no-store" });
-  const text = await res.text();
-  if (!res.ok) throw new Error(`Meta CAPI ${res.status}: ${text.slice(0, 300)}`);
-  return { ok: true, event_id: `purchase-${ref}` };
 }
 
 export const PRODUCT_ID = "armario-multifuncional";

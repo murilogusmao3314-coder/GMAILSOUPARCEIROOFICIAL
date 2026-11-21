@@ -1,20 +1,80 @@
 $("#ic-back").innerHTML = icon.back;
 const pix = store.get("pix");
-if (!pix || !pix.pixCode) { $("#empty").classList.remove("hidden"); } else {
+const order = store.get("order") || {};
+if (!pix || !pix.pixCode) { $("#empty").classList.remove("hidden"); }
+else {
   $("#main").classList.remove("hidden");
-  $("#total").textContent = brl(pix.total); $("#code").textContent = pix.pixCode;
-  if (pix.qrCodeImage) $("#qr").innerHTML = `<img src="${pix.qrCodeImage}" class="h-48 w-48" alt="QR Code Pix"/>`;
+  $("#total").textContent = brl(pix.total);
+  $("#code").textContent = pix.pixCode;
+
+  // ----- QR Code (gerado aqui a partir do código copia e cola) -----
+  try {
+    const qr = qrcode(0, "M"); qr.addData(pix.pixCode); qr.make();
+    $("#qr").innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    const svg = $("#qr svg"); svg.setAttribute("class", "h-52 w-52"); svg.setAttribute("role", "img"); svg.setAttribute("aria-label", "QR Code Pix");
+  } catch (e) {
+    // alternativa: imagem do gateway, se houver
+    $("#qr").innerHTML = pix.qrCodeImage ? `<img src="${pix.qrCodeImage}" class="h-52 w-52" alt="QR Code Pix"/>` : '<p class="text-xs text-gray-500 text-center px-2">Use o código Pix Copia e Cola abaixo.</p>';
+  }
+
+  // ----- Resumo -----
+  const v = VARIANTS[order.color] || VARIANTS["2-pretos"];
+  $("#s-img").src = v.img; $("#s-title").textContent = S.product.shortTitle;
+  $("#s-var").textContent = `${v.label} • ${pix.units || order.qty || 1}x`;
+  $("#s-ship").textContent = pix.shipName || "Frete";
+  $("#s-shipv").textContent = "incluso"; $("#s-total").textContent = brl(pix.total);
+
+  // ----- Copiar -----
+  const label = $("#copy-label");
   $("#copy").onclick = async () => {
-    try { await navigator.clipboard.writeText(pix.pixCode); } catch { const t = document.createElement("textarea"); t.value = pix.pixCode; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); }
-    const b = $("#copy"); b.textContent = "✓ Código copiado!"; b.classList.replace("bg-red-600", "bg-green-600");
-    setTimeout(() => { b.textContent = "Copiar código Pix"; b.classList.replace("bg-green-600", "bg-red-600"); }, 3000);
+    try { await navigator.clipboard.writeText(pix.pixCode); }
+    catch { const t = document.createElement("textarea"); t.value = pix.pixCode; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); }
+    label.textContent = "✓ Código copiado! Agora cole no app do banco";
+    $("#copy").classList.replace("bg-emerald-600", "bg-emerald-700");
+    clearTimeout(window.__ct); window.__ct = setTimeout(() => { label.textContent = "Copiar código Pix"; $("#copy").classList.replace("bg-emerald-700", "bg-emerald-600"); }, 4000);
   };
-  // Prazo real de expiração (15 min a partir da geração do Pix)
-  const start = store.get("pixStart") || Date.now(); store.set("pixStart", start);
-  const tick = () => { const l = Math.max(0, 15 * 60 - Math.floor((Date.now() - start) / 1000)); $("#clock").textContent = String(Math.floor(l / 60)).padStart(2, "0") + ":" + String(l % 60).padStart(2, "0"); if (!l) $("#status").textContent = "O código expirou. Volte e faça um novo pedido."; };
-  tick(); setInterval(tick, 1000);
-  // Confirmação automática (se o seu backend expõe o status)
-  if (S.PIX_STATUS_ENDPOINT && pix.externalRef) setInterval(async () => {
-    try { const j = await (await fetch(`${S.PIX_STATUS_ENDPOINT}?ref=${encodeURIComponent(pix.externalRef)}`)).json(); if (j.paid) { store.set("paid", { ref: pix.externalRef, total: pix.total, qty: pix.qty || 1 }); location.href = withUtms("/obrigado"); } } catch {}
-  }, 5000);
+
+  // ----- Validade do código (só mostra se a PinguPag informou) -----
+  const expMs = pix.expiresAt ? Date.parse(String(pix.expiresAt).replace(" ", "T") + "-03:00") : NaN;
+  let expired = false;
+  if (Number.isFinite(expMs) && expMs - Date.now() > 0 && expMs - Date.now() < 6 * 3600 * 1000) {
+    $("#timer-box").classList.remove("hidden");
+    const tick = () => {
+      const l = Math.max(0, Math.floor((expMs - Date.now()) / 1000));
+      const h = Math.floor(l / 3600), m = Math.floor((l % 3600) / 60), s = l % 60, pad = (n) => String(n).padStart(2, "0");
+      $("#clock").textContent = (h ? pad(h) + ":" : "") + pad(m) + ":" + pad(s);
+      if (!l && !expired) { expired = true; setStatus("expired", "Este código expirou. Volte ao checkout para gerar um novo."); }
+    };
+    tick(); setInterval(tick, 1000);
+  }
+
+  // ----- Verificação de pagamento -----
+  function setStatus(kind, text) {
+    const dot = $("#status span:first-child");
+    dot.className = "h-2 w-2 rounded-full " + ({ wait: "bg-amber-400 animate-pulse", ok: "bg-emerald-500", warn: "bg-red-500", expired: "bg-red-500" }[kind] || "bg-gray-300");
+    $("#status-text").textContent = text;
+  }
+  async function checkPaid() {
+    if (!S.PIX_STATUS_ENDPOINT || !pix.externalRef) return null;
+    try { const j = await (await fetch(`${S.PIX_STATUS_ENDPOINT}?ref=${encodeURIComponent(pix.externalRef)}`, { cache: "no-store" })).json(); return !!j.paid; }
+    catch { return null; }
+  }
+  let done = false;
+  function goThanks() {
+    if (done) return; done = true;
+    store.set("paid", { ref: pix.externalRef, total: pix.total, qty: pix.qty || 1 });
+    setStatus("ok", "Pagamento confirmado! Redirecionando…");
+    setTimeout(() => (location.href = withUtms("/obrigado")), 900);
+  }
+  setInterval(async () => { if (!done && !expired && (await checkPaid())) goThanks(); }, 5000);
+  document.addEventListener("visibilitychange", async () => { if (!document.hidden && !done && (await checkPaid())) goThanks(); });
+
+  $("#check").onclick = async () => {
+    const b = $("#check"); b.disabled = true; $("#check-spin").classList.remove("hidden"); $("#check-label").textContent = "Verificando…";
+    const r = await checkPaid();
+    b.disabled = false; $("#check-spin").classList.add("hidden"); $("#check-label").textContent = "Já paguei, verificar";
+    if (r) goThanks();
+    else if (r === false) setStatus("wait", "Ainda não identificamos o pagamento. Pode levar até 1 minuto — tente de novo em instantes.");
+    else setStatus("warn", "Não foi possível verificar agora. Tente novamente em instantes.");
+  };
 }

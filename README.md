@@ -27,16 +27,6 @@ Projeto Next.js (compatível com v0/Vercel): as páginas ficam em `public/` e `n
 - Troque os textos/avaliações/contagens ("5.821 vendidos", 327 avaliações, etc.) por dados reais da sua loja.
 - Revise as políticas legais com seu contador/advogado.
 
-## Meta Pixel (ID 1125182217062286)
-`public/js/pixel.js` é carregado em todas as páginas. Eventos:
-- `PageView` — todas as páginas
-- `ViewContent` — home
-- `AddToCart` — ao confirmar a variante ("Comprar agora"/"Adicionar ao carrinho")
-- `InitiateCheckout` — abrir o checkout
-- `AddPaymentInfo` — clicar em "Fazer pedido" com os dados válidos
-- `PixGerado` (personalizado) — Pix gerado
-- `Purchase` — **somente** quando o pagamento é confirmado (`PIX_STATUS_ENDPOINT` retorna `paid:true`) e só uma vez por pedido
-
 ## UTMify
 Em todas as páginas: `window.pixelId` + `cdn.utmify.com.br/scripts/pixel/pixel.js` e o script de UTMs (`.../utms/latest.js`).
 Todos os parâmetros da URL de entrada (UTMs, fbclid e qualquer outro) são guardados em `localStorage` (chave `url_params`) e anexados a todo link/navegação interna (home → checkout → Pix → obrigado). Também vão no campo `tracking` do `PIX_ENDPOINT`.
@@ -51,17 +41,20 @@ Rotas de servidor (a chave secreta nunca vai para o navegador):
 Se mudar preços/frete/extras em `public/js/config.js`, atualize também `PRICING` em `lib-pingupag.js` (o servidor recusa pedidos com valor diferente).
 
 ## Vendas na UTMify e na Meta (sem duplicar)
-**Quem envia o quê** — cada destino recebe a venda por UM único caminho:
+**Regra de ouro: a Meta é tratada SÓ pela UTMify.** A UTMify já dispara o Pixel Meta e a API de Conversões
+(com o ID de deduplicação dela). Por isso este site **não** carrega o código do Pixel Meta e **não** envia
+nada à Meta — qualquer evento extra nosso seria contado em dobro (o aviso "Detectamos outro código de Pixel Meta").
 
-| Destino | Caminho | Como evita duplicar |
-|---|---|---|
-| UTMify | servidor → `POST api.utmify.com.br/api-credentials/orders` | `orderId` = referência do pedido (sempre o mesmo). Pedido criado = `waiting_payment`; ao pagar, o MESMO `orderId` vira `paid` (atualiza, não cria outro). `createdAt` é derivado da referência (idêntico nas duas chamadas). |
-| Meta | navegador (`fbq Purchase`) **+** servidor (API de Conversões) | os dois usam o MESMO `event_id` = `purchase-<referência>` → a Meta desduplica. O servidor garante a venda mesmo se o cliente fechar a página após pagar no app do banco. |
+| Etapa | O que acontece |
+|---|---|
+| Visita / checkout | scripts da UTMify (`pixel.js` + `utms/latest.js`) registram a sessão e disparam os eventos da Meta |
+| Pix gerado | o servidor envia o pedido à UTMify como `waiting_payment` (com UTMs, cliente e produtos) |
+| Pix pago | o webhook da PinguPag (link assinado, confirmado na API) envia o **mesmo `orderId`** como `paid` → a UTMify registra a venda na campanha/conjunto/anúncio e repassa o Purchase à Meta |
 
-Gatilho: o webhook da PinguPag (`/api/webhook?d=...`). O link tem assinatura (HMAC) gerada pelo site, e a venda só conta depois que a API da PinguPag confirma `approved` com o mesmo valor. O link carrega os UTMs, `fbp`, `fbc`, IP e navegador do clique original.
+Anti-duplicação: `orderId` fixo (= referência do pedido) e `createdAt` derivado da referência; reenvios do webhook só atualizam o mesmo pedido.
 
-**Checklist para NÃO duplicar (faça uma vez):**
-1. Na **PinguPag**: deixe a integração nativa com a UTMify **desligada** (senão a venda entra duas vezes).
-2. Na **UTMify**: no cadastro do Pixel da Meta, **não** deixe a UTMify enviar o evento `Purchase` para a Meta (o site já envia). Só uma fonte pode mandar o Purchase.
-3. Variáveis na Vercel: `UTMIFY_API_TOKEN`, `META_CAPI_TOKEN` (veja `.env.example`).
-4. Teste: use `META_TEST_EVENT_CODE` e confira no Gerenciador de Eventos que o Purchase aparece **uma vez** como "Navegador e servidor" (desduplicado). Na UTMify, confira que o pedido aparece **uma vez**, com campanha/conjunto/anúncio preenchidos.
+**Checklist:**
+1. **PinguPag**: integração nativa com a UTMify **desligada** (senão a venda entra duas vezes).
+2. **UTMify**: Pixel Meta cadastrado (já feito). Não adicione o código do Pixel Meta no site.
+3. Vercel: `UTMIFY_API_TOKEN` (UTMify → Integrações → Webhooks → Credenciais de API) e `PINGUPAG_API_KEY`.
+4. Teste: uma venda de valor baixo → na UTMify o pedido aparece **uma vez**, com campanha/conjunto/anúncio; na Meta o Purchase aparece **uma vez**. O aviso de "outro Pixel Meta" deve sumir.

@@ -13,7 +13,6 @@
 <script async defer src="https://cdn.utmify.com.br/scripts/pixel/pixel.js"></script>
 <script src="https://cdn.utmify.com.br/scripts/utms/latest.js" data-utmify-prevent-xcod-sck data-utmify-prevent-subids async defer></script>
 
-<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1125182217062286&ev=PageView&noscript=1" alt=""/></noscript>
 </head>
 <body class="bg-gray-50">
 <div class="max-w-md mx-auto min-h-screen pb-40 overflow-x-hidden">
@@ -28,25 +27,35 @@
   <div id="err" class="hidden px-4 py-2 bg-red-50 border-b border-red-200"><p class="text-sm text-red-600 font-medium text-center" id="err-msg"></p></div>
 
   <form id="form" class="bg-white border-b border-gray-100" novalidate autocomplete="on">
-    <div class="px-4 py-3 flex items-center justify-between border-b border-gray-100">
-      <div class="flex items-center gap-2 text-sm font-medium text-gray-800"><span id="ic-pin"></span>Endereço de envio</div>
-      <span class="text-sm font-medium text-red-600">+ Adicionar endereço</span>
+    <!-- 1. Dados pessoais -->
+    <div class="px-4 pt-4 pb-3 flex items-center gap-3 border-b border-gray-100">
+      <span class="h-6 w-6 rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center">1</span>
+      <div><p class="text-sm font-semibold text-gray-900">Dados pessoais</p><p class="text-[11px] text-gray-500">Usamos para emitir o pedido e avisar sobre a entrega</p></div>
     </div>
     <div class="p-4 space-y-3">
       <input id="name" name="name" autocomplete="name" placeholder="Nome completo" class="inp" />
-      <div class="relative"><span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">+55</span><input id="phone" name="phone" autocomplete="tel-national" inputmode="numeric" placeholder="Telefone com DDD" class="inp" style="padding-left:48px" /></div>
       <input id="email" name="email" type="email" autocomplete="email" placeholder="E-mail" class="inp" />
-      <input id="cep" name="cep" autocomplete="postal-code" inputmode="numeric" placeholder="CEP" class="inp" />
-      <div class="grid grid-cols-2 gap-3"><input id="uf" maxlength="2" placeholder="UF" class="inp uppercase" /><input id="city" placeholder="Cidade" class="inp" /></div>
-      <input id="district" placeholder="Bairro" class="inp" />
-      <input id="street" placeholder="Endereço (rua, avenida...)" class="inp" />
-      <div class="grid grid-cols-2 gap-3"><input id="number" placeholder="Número" class="inp" /><input id="complement" placeholder="Complemento" class="inp" /></div>
+      <div class="relative"><span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">+55</span><input id="phone" name="phone" autocomplete="tel-national" inputmode="numeric" placeholder="WhatsApp / Telefone com DDD" class="inp" style="padding-left:48px" /></div>
       <input id="cpf" inputmode="numeric" placeholder="CPF (000.000.000-00)" class="inp" />
+    </div>
+
+    <!-- 2. Endereço -->
+    <div class="px-4 pt-4 pb-3 flex items-center gap-3 border-y border-gray-100">
+      <span class="h-6 w-6 rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center">2</span>
+      <div><p class="text-sm font-semibold text-gray-900">Endereço de entrega</p><p class="text-[11px] text-gray-500">Digite o CEP e preenchemos o resto para você</p></div>
+    </div>
+    <div class="p-4 space-y-3">
+      <input id="cep" name="cep" autocomplete="postal-code" inputmode="numeric" placeholder="CEP" class="inp" />
+      <div class="grid grid-cols-3 gap-3"><input id="uf" maxlength="2" placeholder="UF" class="inp uppercase" /><input id="city" placeholder="Cidade" class="inp col-span-2" /></div>
+      <input id="district" placeholder="Bairro" class="inp" />
+      <input id="street" placeholder="Rua / Avenida" class="inp" />
+      <div class="grid grid-cols-2 gap-3"><input id="number" placeholder="Número" class="inp" /><input id="complement" placeholder="Complemento (opcional)" class="inp" /></div>
     </div>
   </form>
 
   <div class="border-t-2 border-dashed border-cyan-300"></div>
   <section class="bg-white px-4 py-4">
+    <div class="flex items-center gap-3 mb-3"><span class="h-6 w-6 rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center">3</span><p class="text-sm font-semibold text-gray-900">Revise seu pedido</p></div>
     <p class="font-semibold text-sm">⚠️ Poucas unidades disponíveis</p>
     <p class="text-xs text-green-700 font-medium mb-3">⭐ Muito bem avaliado! 4.8/5,0</p>
     <div class="flex gap-3">
@@ -66,7 +75,7 @@
   <section id="bumps-wrap" class="bg-white px-4 pb-4"><p class="font-semibold text-sm mb-3">Leve junto e economize</p><div id="bumps" class="space-y-3"></div></section>
 
   <section class="bg-white px-4 py-4 mt-2">
-    <p class="font-semibold text-sm mb-3">Opções de envio</p>
+    <div class="flex items-center gap-3 mb-3"><span class="h-6 w-6 rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center">4</span><p class="text-sm font-semibold text-gray-900">Escolha o envio</p></div>
     <div id="ship" class="space-y-3"></div>
   </section>
 
@@ -83,8 +92,8 @@
   </section>
 
   <section class="bg-white px-4 py-4 mt-2">
-    <p class="font-semibold text-sm mb-3">Forma de pagamento</p>
-    <div class="flex items-center justify-between"><div class="flex items-center gap-2 text-sm"><img src="/assets/pix-icon.png" class="h-5 w-5" alt=""/>Pix</div><span class="h-5 w-5 rounded-full border-2 border-red-600 flex items-center justify-center"><span class="h-2.5 w-2.5 rounded-full bg-red-600"></span></span></div>
+    <div class="flex items-center gap-3 mb-3"><span class="h-6 w-6 rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center">5</span><p class="text-sm font-semibold text-gray-900">Pagamento</p></div>
+    <div class="flex items-center justify-between"><div class="flex items-center gap-2 text-sm"><img src="/assets/pix-icon.png" class="h-5 w-5" alt=""/><span><b>Pix</b> <span class="text-xs text-gray-500">— aprovação imediata</span></span></div><span class="h-5 w-5 rounded-full border-2 border-red-600 flex items-center justify-center"><span class="h-2.5 w-2.5 rounded-full bg-red-600"></span></span></div>
     <p class="text-[11px] text-gray-500 mt-4 pt-4 border-t border-gray-100">Ao fazer um pedido, você concorda com os <a class="font-bold text-gray-700" href="/termos-de-uso">Termos de uso e venda</a> e reconhece que leu e concorda com a <a class="font-bold text-gray-700" href="/politica-de-privacidade">Política de privacidade</a>.</p>
   </section>
   <p class="px-4 py-4 text-sm text-green-700 font-medium">😊 <span id="saving"></span></p>

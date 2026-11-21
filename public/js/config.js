@@ -10,8 +10,8 @@ window.STORE = {
   address: "Rua Aylton Vasconcelos, 270 - Apt 202, Jardim Guanabara, Rio de Janeiro - RJ",
 
   product: {
-    title: "[PAGUE 1 LEVE 2] Armário de Aço Multifuncional — Organizador Resistente para Cozinha, Banheiro e Lavanderia",
-    shortTitle: "[PAGUE 1 LEVE 2] Armário de Aço Multifuncional",
+    title: "[PAGUE 1 LEVE 2] Armário de Aço Multifuncional com Rodinhas — Organizador Resistente para Cozinha, Banheiro e Lavanderia",
+    shortTitle: "[PAGUE 1 LEVE 2] Armário de Aço Multifuncional com Rodinhas",
     price: 7790,          // preço de cada "kit" em centavos (R$ 77,90)
     comparePrice: 19890,  // preço "de" em centavos (só use se for um preço real praticado)
     installments: 6,

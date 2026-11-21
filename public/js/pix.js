@@ -18,11 +18,17 @@ else {
   }
 
   // ----- Resumo -----
-  const v = VARIANTS[order.color] || VARIANTS["2-pretos"];
-  $("#s-img").src = v.img; $("#s-title").textContent = S.product.shortTitle;
-  $("#s-var").textContent = `${v.label} • ${pix.units || order.qty || 1}x`;
-  $("#s-ship").textContent = pix.shipName || "Frete";
-  $("#s-shipv").textContent = "incluso"; $("#s-total").textContent = brl(pix.total);
+  if (pix.kind === "upsell") {
+    $("#s-img").src = S.upsell.image; $("#s-title").textContent = S.upsell.name; $("#s-var").textContent = "Oferta extra • 1x";
+    $("#s-ship").parentElement.classList.add("hidden"); $("#s-total").textContent = brl(pix.total);
+    document.querySelector("h1").textContent = "Quase lá! Pague sua oferta extra 🎁";
+  } else {
+    const v = VARIANTS[order.color] || VARIANTS["2-pretos"];
+    $("#s-img").src = v.img; $("#s-title").textContent = S.product.shortTitle;
+    $("#s-var").textContent = `${v.label} • ${pix.units || order.qty || 1}x`;
+    $("#s-ship").textContent = pix.shipName || "Frete";
+    $("#s-shipv").textContent = "incluso"; $("#s-total").textContent = brl(pix.total);
+  }
 
   // ----- Copiar -----
   const label = $("#copy-label");
@@ -62,9 +68,12 @@ else {
   let done = false;
   function goThanks() {
     if (done) return; done = true;
+    const isUp = pix.kind === "upsell";
     store.set("paid", { ref: pix.externalRef, total: pix.total, qty: pix.qty || 1 });
+    if (isUp) store.set("upsellPaid", true);
     setStatus("ok", "Pagamento confirmado! Redirecionando…");
-    setTimeout(() => (location.href = withUtms("/obrigado")), 900);
+    // Pedido principal pago -> oferta (upsell). Upsell pago -> confirmação.
+    setTimeout(() => (location.href = withUtms(isUp ? "/confirmado" : "/upsell")), 900);
   }
   setInterval(async () => { if (!done && !expired && (await checkPaid())) goThanks(); }, 5000);
   document.addEventListener("visibilitychange", async () => { if (!document.hidden && !done && (await checkPaid())) goThanks(); });

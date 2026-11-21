@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-export const PAGES = ["checkout", "pix", "obrigado", "contato", "termos-de-uso", "politica-de-privacidade", "trocas-e-devolucoes", "politica-envio"];
+export const PAGES = ["checkout", "pix", "obrigado", "contato", "termos-de-uso", "politica-de-privacidade", "trocas-e-devolucoes", "politica-envio", "upsell", "confirmado"];
 
 // Lê o HTML da loja (em /public) e devolve como página completa.
 export function htmlResponse(name) {

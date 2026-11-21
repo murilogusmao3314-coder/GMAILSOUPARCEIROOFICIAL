@@ -31,6 +31,9 @@ window.STORE = {
     { id: "turbochef", name: "Kit Panela Pressão TurboChef (2 Panelas de 6L)", price: 4489, image: "/assets/bump-turbochef.jpg" },
   ],
 
+  // Oferta exibida DEPOIS do pagamento (página /upsell). Pix novo gerado com 1 clique.
+  upsell: { name: "Kit Cozinha Completa (3 produtos)", price: 5990, image: "/assets/upsell-kit.jpg", items: ["panelas", "potes", "turbochef"] },
+
   // Integração de pagamento Pix (SEU backend/gateway). Veja o README.
   // POST  PIX_ENDPOINT            -> { success:true, data:{ pixCode, qrCodeImage?, externalRef } }
   // GET   PIX_STATUS_ENDPOINT?ref=-> { paid: true|false }

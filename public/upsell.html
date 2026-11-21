@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="color-scheme" content="light only" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oferta exclusiva</title>
+  <link rel="icon" href="/assets/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+<script src="/js/pixel.js"></script>
+<!-- UTMify: pixel (ID do painel) + script de UTMs -->
+<script>window.pixelId="6b0129f6a2e5630e45fa9e10";</script>
+<script async defer src="https://cdn.utmify.com.br/scripts/pixel/pixel.js"></script>
+<script src="https://cdn.utmify.com.br/scripts/utms/latest.js" data-utmify-prevent-xcod-sck data-utmify-prevent-subids async defer></script>
+
+</head>
+<body class="bg-gray-50">
+<div class="max-w-md mx-auto min-h-screen pb-10">
+  <div class="bg-emerald-600 text-white text-center text-sm font-semibold px-4 py-2.5">✓ Pagamento confirmado! Falta só uma coisa…</div>
+
+  <main class="px-4 pt-5 space-y-4">
+    <div class="text-center">
+      <span class="inline-block text-[11px] font-bold uppercase tracking-wide bg-red-100 text-red-700 rounded-full px-3 py-1">Oferta exclusiva — só nesta página</span>
+      <h1 class="text-[24px] font-extrabold text-gray-900 leading-tight mt-3">Leve também o <span class="text-red-600">Kit Cozinha Completa</span></h1>
+      <p class="text-sm text-gray-600 mt-2">Aproveite que seu pedido já está garantido e complete a organização da sua cozinha com <b>3 produtos</b> por um preço especial.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <img id="up-img" src="/assets/upsell-kit.jpg" alt="Kit Cozinha Completa: panelas, potes e panela de pressão" class="w-full" />
+      <div class="p-5">
+        <ul id="up-items" class="space-y-3 mb-5"></ul>
+        <div class="rounded-xl bg-red-50 border border-red-100 p-4 text-center">
+          <p class="text-xs text-gray-500">Valor dos 3 produtos separados: <s id="up-old"></s></p>
+          <p class="text-[34px] font-extrabold text-red-600 leading-tight" id="up-price"></p>
+          <p class="text-xs font-semibold text-emerald-700 mt-0.5" id="up-save"></p>
+        </div>
+      </div>
+    </div>
+
+    <p id="up-err" class="hidden text-sm text-red-600 font-medium text-center bg-red-50 border border-red-200 rounded-lg p-3"></p>
+
+    <button id="up-yes" class="w-full rounded-xl py-4 text-[16px] font-extrabold text-white bg-emerald-600 active:bg-emerald-700 shadow-lg flex items-center justify-center gap-2">
+      <span id="up-spin" class="hidden h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span><span id="up-yes-label">SIM! Quero comprar agora</span>
+    </button>
+    <p class="text-center text-xs text-gray-500 -mt-2">Pix gerado na hora, com os mesmos dados do seu pedido. Sem digitar nada de novo.</p>
+    <a id="up-no" href="/confirmado" class="block text-center text-sm text-gray-500 underline py-2">Não quero, ir para a confirmação</a>
+
+    <div class="flex items-center justify-center gap-4 text-[11px] text-gray-500 pt-2"><span>🔒 Pagamento seguro</span><span>⚡ Aprovação imediata</span></div>
+  </main>
+</div>
+<script src="/js/config.js"></script><script src="/js/common.js"></script><script src="/js/upsell.js"></script>
+</body></html>

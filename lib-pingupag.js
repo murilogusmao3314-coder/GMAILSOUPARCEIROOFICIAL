@@ -33,6 +33,7 @@ export const VARIANT_LABELS = {
 export const BUMP_NAMES = {
   panelas: "Conjunto de Panelas LIFE SMILE 29 Peças", potes: "Potes Organizadores 16 Peças", turbochef: "Kit Panela Pressão TurboChef",
 };
+export const UPSELL = { id: "upsell-kit-cozinha", name: "Kit Cozinha Completa (3 produtos)", price: 5990 }; // igual a STORE.upsell em config.js
 export const SHIPPING_NAMES = { correios: "Frete Correios", jadlog: "Frete JadLog", completo: "Frete Completo" };
 
 // Ex.: "Armário Multifuncional - 2 Pretos e 2 Brancos (2 kits) + Panelas LIFE SMILE | Frete Correios"
@@ -105,8 +106,8 @@ export async function sendUtmify({ ref, status, tok, customer, ip, approvedAtMs 
   const token = process.env.UTMIFY_API_TOKEN;
   if (!token) return { skipped: "UTMIFY_API_TOKEN ausente" };
   const vLabel = VARIANT_LABELS[tok.c] || null;
-  const products = [{ id: PRODUCT_ID, name: vLabel ? `Armário Multifuncional - ${vLabel}` : PRODUCT_NAME, planId: tok.c || null, planName: vLabel, quantity: tok.q, priceInCents: PRICING.productPrice }];
-  for (const id of tok.x || []) products.push({ id: `extra-${id}`, name: BUMP_NAMES[id] || `Extra ${id}`, planId: null, planName: null, quantity: 1, priceInCents: PRICING.bumps[id] });
+  const products = tok.up ? [{ id: UPSELL.id, name: UPSELL.name, planId: null, planName: null, quantity: 1, priceInCents: UPSELL.price }] : [{ id: PRODUCT_ID, name: vLabel ? `Armário Multifuncional - ${vLabel}` : PRODUCT_NAME, planId: tok.c || null, planName: vLabel, quantity: tok.q, priceInCents: PRICING.productPrice }];
+  if (!tok.up) for (const id of tok.x || []) products.push({ id: `extra-${id}`, name: BUMP_NAMES[id] || `Extra ${id}`, planId: null, planName: null, quantity: 1, priceInCents: PRICING.bumps[id] });
   const total = tok.a;
   const fee = Math.round(total * (Number(process.env.PINGUPAG_FEE_PERCENT || 0) / 100)) + Number(process.env.PINGUPAG_FEE_FIXED_CENTS || 0);
   const createdAt = utcStr(refTime(ref));

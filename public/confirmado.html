@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="color-scheme" content="light only" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pedido confirmado</title>
+  <link rel="icon" href="/assets/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+<script src="/js/pixel.js"></script>
+<!-- UTMify: pixel (ID do painel) + script de UTMs -->
+<script>window.pixelId="6b0129f6a2e5630e45fa9e10";</script>
+<script async defer src="https://cdn.utmify.com.br/scripts/pixel/pixel.js"></script>
+<script src="https://cdn.utmify.com.br/scripts/utms/latest.js" data-utmify-prevent-xcod-sck data-utmify-prevent-subids async defer></script>
+
+</head>
+<body class="bg-gray-50 overflow-x-hidden">
+<canvas id="confetti" class="fixed inset-0 w-full h-full pointer-events-none z-50"></canvas>
+<div class="max-w-md mx-auto min-h-screen pb-10">
+  <div class="bg-gradient-to-b from-emerald-500 to-emerald-600 text-white text-center px-6 pt-10 pb-14 rounded-b-[2.5rem]">
+    <div class="mx-auto h-20 w-20 rounded-full bg-white/20 flex items-center justify-center mb-4"><div class="h-14 w-14 rounded-full bg-white text-emerald-600 flex items-center justify-center text-4xl font-extrabold">✓</div></div>
+    <h1 class="text-[26px] font-extrabold leading-tight" id="c-title">Pedido confirmado!</h1>
+    <p class="text-emerald-50 text-sm mt-2">Recebemos o seu pagamento. Obrigado pela compra! 🎉</p>
+  </div>
+
+  <main class="px-4 -mt-8 space-y-4">
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-md p-5">
+      <div class="flex items-center justify-between mb-3"><p class="text-sm font-bold text-gray-900">Resumo do pedido</p><span id="c-code" class="text-xs font-mono text-gray-400"></span></div>
+      <div class="flex gap-3 items-center"><img id="c-img" class="h-16 w-16 rounded-lg object-cover bg-gray-100" alt=""/><div class="flex-1 min-w-0"><p class="text-sm text-gray-800 leading-snug" id="c-prod"></p><p class="text-xs text-gray-500" id="c-var"></p></div></div>
+      <div id="c-up" class="hidden mt-3 flex gap-3 items-center"><img id="c-up-img" class="h-16 w-16 rounded-lg object-cover bg-gray-100" alt=""/><div class="flex-1 min-w-0"><p class="text-sm text-gray-800 leading-snug" id="c-up-name"></p><p class="text-xs text-emerald-600 font-medium">Oferta extra incluída ✓</p></div></div>
+      <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between font-bold text-gray-900"><span>Total pago</span><span id="c-total"></span></div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+      <p class="text-sm font-bold text-gray-900 mb-4">O que acontece agora</p>
+      <ol class="space-y-4 text-sm">
+        <li class="flex gap-3"><span class="h-8 w-8 shrink-0 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">📧</span><div><p class="font-semibold text-gray-900">Acompanhe pelo e-mail</p><p class="text-gray-500 text-xs">As atualizações do seu pedido serão enviadas para <b id="c-mail">o seu e-mail</b>.</p></div></li>
+        <li class="flex gap-3"><span class="h-8 w-8 shrink-0 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">📦</span><div><p class="font-semibold text-gray-900">Preparação e envio</p><p class="text-gray-500 text-xs">Seu pedido é separado e despachado em até 2 dias úteis.</p></div></li>
+        <li class="flex gap-3"><span class="h-8 w-8 shrink-0 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">🔎</span><div><p class="font-semibold text-gray-900">Código de rastreio</p><p class="text-gray-500 text-xs">Assim que despachar, você recebe o rastreio por e-mail e WhatsApp.</p></div></li>
+        <li class="flex gap-3"><span class="h-8 w-8 shrink-0 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">🏠</span><div><p class="font-semibold text-gray-900">Entrega na sua casa</p><p class="text-gray-500 text-xs">Prazo de acordo com o frete escolhido.</p></div></li>
+      </ol>
+    </div>
+
+    <div id="c-noaddr" class="hidden rounded-2xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-900">📍 <b>Falta o seu endereço de entrega.</b> Vamos chamar você no WhatsApp para confirmar. Se preferir, fale com a gente agora.</div>
+
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center">
+      <p class="text-sm font-semibold text-gray-900">Precisa de ajuda?</p>
+      <p class="text-xs text-gray-500 mb-3">Nosso atendimento responde em até 24h.</p>
+      <a href="/contato" class="inline-block rounded-full border-2 border-red-600 text-red-600 font-bold text-sm px-6 py-2.5">Falar com o suporte</a>
+    </div>
+    <a href="/" class="block text-center text-sm text-gray-500 underline py-2">Voltar à loja</a>
+  </main>
+</div>
+<script src="/js/config.js"></script><script src="/js/common.js"></script><script src="/js/confirmado.js"></script>
+</body></html>

@@ -1,4 +1,4 @@
-import { pingu, computeAmount, validCPF, PRODUCT_NAME, VARIANT_LABELS, orderTitle, newReference, signToken, sendUtmify, TRACK_KEYS } from "../../../lib-pingupag";
+import { pingu, computeAmount, validCPF, PRODUCT_NAME, VARIANT_LABELS, orderTitle, UPSELL, newReference, signToken, sendUtmify, TRACK_KEYS } from "../../../lib-pingupag";
 
 export const dynamic = "force-dynamic";
 const str = (v, max = 120) => String(v ?? "").trim().slice(0, max);
@@ -10,12 +10,13 @@ export async function POST(req) {
   try { b = await req.json(); } catch { return fail("Requisição inválida."); }
 
   // Valor SEMPRE calculado no servidor (nunca confie no valor do navegador)
-  const amount = computeAmount(b);
+  const isUp = b.upsell === true;
+  const amount = isUp ? UPSELL.price : computeAmount(b);
   if (amount === null) return fail("Pedido inválido.");
   if (Number(b.amount) !== amount) return fail("O valor do pedido mudou. Atualize a página e tente novamente.");
 
-  if (!(b.color in VARIANT_LABELS)) return fail("Variante inválida.");
-  const title = orderTitle(b);
+  if (!isUp && !(b.color in VARIANT_LABELS)) return fail("Variante inválida.");
+  const title = isUp ? `Oferta extra - ${UPSELL.name}` : orderTitle(b);
   const c = b.customer || {}, a = b.shipping || {};
   const name = str(c.name), email = str(c.email), phone = digits(c.phone), doc = digits(c.document?.number);
   if (name.split(/\s+/).length < 2) return fail("Nome completo inválido.");
@@ -35,7 +36,7 @@ export async function POST(req) {
   const m = b.meta || {};
   // Token assinado que viaja na postback_url: o webhook usa isto para mandar a venda ao UTMify/Meta
   const tok = {
-    a: amount, q: Number(b.quantity), c: b.color, x: [...new Set(Array.isArray(b.extras) ? b.extras : [])], t: tracking,
+    a: amount, q: isUp ? 1 : Number(b.quantity), c: isUp ? undefined : b.color, x: isUp ? [] : [...new Set(Array.isArray(b.extras) ? b.extras : [])], ...(isUp ? { up: 1 } : {}), t: tracking,
     fbp: str(m.fbp, 100) || undefined, fbc: str(m.fbc, 200) || undefined, u: str(m.sourceUrl, 300) || undefined, ip, ua: ua && ua.slice(0, 300),
   };
 

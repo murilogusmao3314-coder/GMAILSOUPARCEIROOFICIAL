@@ -58,3 +58,9 @@ Anti-duplicação: `orderId` fixo (= referência do pedido) e `createdAt` deriva
 2. **UTMify**: Pixel Meta cadastrado (já feito). Não adicione o código do Pixel Meta no site.
 3. Vercel: `UTMIFY_API_TOKEN` (UTMify → Integrações → Webhooks → Credenciais de API) e `PINGUPAG_API_KEY`.
 4. Teste: uma venda de valor baixo → na UTMify o pedido aparece **uma vez**, com campanha/conjunto/anúncio; na Meta o Purchase aparece **uma vez**. O aviso de "outro Pixel Meta" deve sumir.
+
+## Fluxo pós-pagamento (upsell)
+`/checkout` → `/pix` → (pago) → **`/upsell`** → `/confirmado`
+- `/upsell`: oferta do Kit Cozinha Completa (3 produtos, R$ 59,90 — `STORE.upsell` em `public/js/config.js` e `UPSELL` em `lib-pingupag.js`, mantenha iguais). "Comprar agora" gera um **novo Pix** com os dados já informados (pedido separado, com `orderId` próprio e os mesmos UTMs); "Não quero" vai direto para `/confirmado`.
+- `/confirmado`: tela de confirmação com confete e resumo (inclui o upsell se foi pago).
+- Cada Pix (pedido e upsell) vira uma venda separada na PinguPag/UTMify.

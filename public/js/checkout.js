@@ -109,7 +109,9 @@ $("#buy").onclick = async () => {
     const j = await r.json();
     if (!r.ok || !j.success) throw new Error(j.error || "Erro ao gerar pagamento. Tente novamente.");
     store.set("pix", { ...j.data, total, email: payload.customer.email, qty: qty + bumps.length, variant: VARIANTS[order.color].label, units: qty, shipName: S.shipping.find((s) => s.id === shipId).name });
-    store.set("paid", null);
+    store.set("paid", null); store.set("upsellPaid", null);
+    store.set("buyer", { customer: payload.customer, shipping: payload.shipping });
+    store.set("mainOrder", { ref: j.data.externalRef, total, variant: VARIANTS[order.color].label, units: qty, extras: bumps.length });
     trackCustom("PixGerado", evData(total));
     location.href = withUtms("/pix");
   } catch (e) { showErr(e.message); btn.disabled = false; btn.textContent = "Fazer pedido"; }

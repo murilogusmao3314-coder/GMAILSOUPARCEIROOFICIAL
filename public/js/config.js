@@ -17,6 +17,10 @@ window.STORE = {
     installments: 6,
   },
 
+  // Fim REAL da promoção de Black Friday, com fuso do Brasil. Ex.: "2026-11-30T23:59:59-03:00".
+  // Vazio = o cronômetro fica escondido. Só preencha se a oferta realmente acaba nessa data.
+  promoEndsAt: "",
+
   // Opções de envio (centavos)
   shipping: [
     { id: "correios", name: "Frete Correios", eta: "7 a 15 dias úteis", price: 0 },

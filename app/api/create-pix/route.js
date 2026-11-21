@@ -1,4 +1,4 @@
-import { pingu, computeAmount, validCPF, PRODUCT_NAME, newReference, signToken, sendUtmify, TRACK_KEYS } from "../../../lib-pingupag";
+import { pingu, computeAmount, validCPF, PRODUCT_NAME, VARIANT_LABELS, orderTitle, newReference, signToken, sendUtmify, TRACK_KEYS } from "../../../lib-pingupag";
 
 export const dynamic = "force-dynamic";
 const str = (v, max = 120) => String(v ?? "").trim().slice(0, max);
@@ -14,6 +14,8 @@ export async function POST(req) {
   if (amount === null) return fail("Pedido inválido.");
   if (Number(b.amount) !== amount) return fail("O valor do pedido mudou. Atualize a página e tente novamente.");
 
+  if (!(b.color in VARIANT_LABELS)) return fail("Variante inválida.");
+  const title = orderTitle(b);
   const c = b.customer || {}, a = b.shipping || {};
   const name = str(c.name), email = str(c.email), phone = digits(c.phone), doc = digits(c.document?.number);
   if (name.split(/\s+/).length < 2) return fail("Nome completo inválido.");
@@ -33,7 +35,7 @@ export async function POST(req) {
   const m = b.meta || {};
   // Token assinado que viaja na postback_url: o webhook usa isto para mandar a venda ao UTMify/Meta
   const tok = {
-    a: amount, q: Number(b.quantity), x: [...new Set(Array.isArray(b.extras) ? b.extras : [])], t: tracking,
+    a: amount, q: Number(b.quantity), c: b.color, x: [...new Set(Array.isArray(b.extras) ? b.extras : [])], t: tracking,
     fbp: str(m.fbp, 100) || undefined, fbc: str(m.fbc, 200) || undefined, u: str(m.sourceUrl, 300) || undefined, ip, ua: ua && ua.slice(0, 300),
   };
 
@@ -42,10 +44,11 @@ export async function POST(req) {
       method: "POST",
       body: JSON.stringify({
         amount,
-        description: PRODUCT_NAME,
+        description: title,
         reference,
         postback_url: `${origin}/api/webhook?d=${encodeURIComponent(signToken({ ref: reference, ...tok }))}`,
-        source: "api_externa",
+        // Se você cadastrou o produto no painel da PinguPag, defina PINGUPAG_PRODUCT_HASH na Vercel para vincular a venda a ele
+        ...(process.env.PINGUPAG_PRODUCT_HASH ? { productHash: process.env.PINGUPAG_PRODUCT_HASH } : { source: "api_externa" }),
         customer: { name, email, phone, document: doc },
         address: { street: str(a.street), number: str(a.number, 20), complement: str(a.complement), neighborhood: str(a.neighborhood), city: str(a.city), state: str(a.state, 2).toUpperCase(), zipcode: digits(a.zipCode) },
         tracking,

@@ -25,6 +25,25 @@ export const PRICING = {
   shipping: { correios: 0, jadlog: 853, completo: 1473 },
   bumps: { panelas: 4890, potes: 2187, turbochef: 4489 },
 };
+// Nomes exibidos no painel (PinguPag/UTMify). Mantenha igual aos de public/js/common.js e config.js
+export const VARIANT_LABELS = {
+  "2-pretos": "2 Pretos", "2-brancos": "2 Brancos", "1-preto-1-branco": "1 Preto e 1 Branco",
+  "4-pretos": "4 Pretos", "4-brancos": "4 Brancos", "2-pretos-2-brancos": "2 Pretos e 2 Brancos",
+};
+export const BUMP_NAMES = {
+  panelas: "Conjunto de Panelas LIFE SMILE 29 Peças", potes: "Potes Organizadores 16 Peças", turbochef: "Kit Panela Pressão TurboChef",
+};
+export const SHIPPING_NAMES = { correios: "Frete Correios", jadlog: "Frete JadLog", completo: "Frete Completo" };
+
+// Ex.: "Armário Multifuncional - 2 Pretos e 2 Brancos (2 kits) + Panelas LIFE SMILE | Frete Correios"
+export function orderTitle({ color, quantity, extras, shippingOption }) {
+  const v = VARIANT_LABELS[color] || "";
+  let t = `Armário Multifuncional${v ? " - " + v : ""} (${quantity} ${quantity > 1 ? "kits" : "kit"})`;
+  const ex = (extras || []).map((id) => BUMP_NAMES[id]).filter(Boolean);
+  if (ex.length) t += " + " + ex.join(" + ");
+  if (SHIPPING_NAMES[shippingOption]) t += " | " + SHIPPING_NAMES[shippingOption];
+  return t.slice(0, 250);
+}
 export const PRODUCT_NAME = "Armário de Aço Multifuncional";
 
 export function computeAmount({ quantity, shippingOption, extras }) {
@@ -85,8 +104,9 @@ const TRACK_KEYS = ["src", "sck", "utm_source", "utm_campaign", "utm_medium", "u
 export async function sendUtmify({ ref, status, tok, customer, ip, approvedAtMs = null, refundedAtMs = null }) {
   const token = process.env.UTMIFY_API_TOKEN;
   if (!token) return { skipped: "UTMIFY_API_TOKEN ausente" };
-  const products = [{ id: PRODUCT_ID, name: PRODUCT_NAME, planId: null, planName: null, quantity: tok.q, priceInCents: PRICING.productPrice }];
-  for (const id of tok.x || []) products.push({ id: `extra-${id}`, name: `Extra ${id}`, planId: null, planName: null, quantity: 1, priceInCents: PRICING.bumps[id] });
+  const vLabel = VARIANT_LABELS[tok.c] || null;
+  const products = [{ id: PRODUCT_ID, name: vLabel ? `Armário Multifuncional - ${vLabel}` : PRODUCT_NAME, planId: tok.c || null, planName: vLabel, quantity: tok.q, priceInCents: PRICING.productPrice }];
+  for (const id of tok.x || []) products.push({ id: `extra-${id}`, name: BUMP_NAMES[id] || `Extra ${id}`, planId: null, planName: null, quantity: 1, priceInCents: PRICING.bumps[id] });
   const total = tok.a;
   const fee = Math.round(total * (Number(process.env.PINGUPAG_FEE_PERCENT || 0) / 100)) + Number(process.env.PINGUPAG_FEE_FIXED_CENTS || 0);
   const createdAt = utcStr(refTime(ref));

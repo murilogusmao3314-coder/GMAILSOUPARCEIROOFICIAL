@@ -18,7 +18,7 @@ Projeto Next.js (compatível com v0/Vercel): as páginas ficam em `public/` e `n
 ## O que você precisa editar — `public/js/config.js`
 - Nome da loja, e-mail, telefone, razão social, CNPJ, endereço (aparecem em contato, rodapé e políticas). Já preenchido com os dados da Casa Fácil / RCS Sports Management & Solutions LTDA.
 - Preço, preço "de" (use só um preço realmente praticado), frete e produtos extras.
-- **Pix**: o front chama `PIX_ENDPOINT` (seu backend/gateway) com um POST JSON e espera
+- **Pix (PinguPag)**: já integrado — veja a seção "PinguPag" abaixo. O front chama `PIX_ENDPOINT` (agora `/api/create-pix`) com um POST JSON e espera
   `{ "success": true, "data": { "pixCode": "...", "qrCodeImage": "data:image/png;base64,...", "externalRef": "..." } }`.
   Opcional: `PIX_STATUS_ENDPOINT?ref=...` retornando `{ "paid": true }` para redirecionar a `/obrigado` automaticamente.
   Sem o endpoint configurado, o checkout avisa que o pagamento não está configurado.
@@ -40,3 +40,12 @@ Projeto Next.js (compatível com v0/Vercel): as páginas ficam em `public/` e `n
 ## UTMify
 Em todas as páginas: `window.pixelId` + `cdn.utmify.com.br/scripts/pixel/pixel.js` e o script de UTMs (`.../utms/latest.js`).
 Todos os parâmetros da URL de entrada (UTMs, fbclid e qualquer outro) são guardados em `localStorage` (chave `url_params`) e anexados a todo link/navegação interna (home → checkout → Pix → obrigado). Também vão no campo `tracking` do `PIX_ENDPOINT`.
+
+## PinguPag (Pix)
+Rotas de servidor (a chave secreta nunca vai para o navegador):
+- `POST /api/create-pix` → valida o pedido, **recalcula o valor no servidor** e cria a transação em `POST /gateway/v1/transaction` (envia cliente, endereço e UTMs em `tracking`). Responde `{ success, data: { pixCode, qrCodeImage, externalRef } }`.
+- `GET /api/pix-status?ref=...` → consulta `/gateway/v1/query?action=list_transactions&external_id=...`; `approved` = pago. É isso que dispara a ida para `/obrigado` e o evento **Purchase**.
+- `POST /api/webhook` → recebe o postback da PinguPag e responde 200.
+
+**Para ativar:** na Vercel, em *Settings → Environment Variables*, crie `PINGUPAG_API_KEY` com a sua Chave Secreta (painel PinguPag → "Configurações e API") e faça um novo deploy.
+Se mudar preços/frete/extras em `public/js/config.js`, atualize também `PRICING` em `lib-pingupag.js` (o servidor recusa pedidos com valor diferente).

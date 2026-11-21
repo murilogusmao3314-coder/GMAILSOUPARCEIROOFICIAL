@@ -34,6 +34,6 @@ window.STORE = {
   // Integração de pagamento Pix (SEU backend/gateway). Veja o README.
   // POST  PIX_ENDPOINT            -> { success:true, data:{ pixCode, qrCodeImage?, externalRef } }
   // GET   PIX_STATUS_ENDPOINT?ref=-> { paid: true|false }
-  PIX_ENDPOINT: "",
-  PIX_STATUS_ENDPOINT: "",
+  PIX_ENDPOINT: "/api/create-pix",
+  PIX_STATUS_ENDPOINT: "/api/pix-status",
 };

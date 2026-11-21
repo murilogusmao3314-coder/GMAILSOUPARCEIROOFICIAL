@@ -1,0 +1,55 @@
+import { pingu, computeAmount, validCPF, PRODUCT_NAME } from "../../../lib-pingupag";
+
+export const dynamic = "force-dynamic";
+const str = (v, max = 120) => String(v ?? "").trim().slice(0, max);
+const digits = (v) => String(v ?? "").replace(/\D/g, "");
+const fail = (error, status = 400) => Response.json({ success: false, error }, { status });
+
+export async function POST(req) {
+  let b;
+  try { b = await req.json(); } catch { return fail("Requisição inválida."); }
+
+  // Valor SEMPRE calculado no servidor (nunca confie no valor do navegador)
+  const amount = computeAmount(b);
+  if (amount === null) return fail("Pedido inválido.");
+  if (Number(b.amount) !== amount) return fail("O valor do pedido mudou. Atualize a página e tente novamente.");
+
+  const c = b.customer || {}, a = b.shipping || {};
+  const name = str(c.name), email = str(c.email), phone = digits(c.phone), doc = digits(c.document?.number);
+  if (name.split(/\s+/).length < 2) return fail("Nome completo inválido.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail("E-mail inválido.");
+  if (phone.length < 10 || phone.length > 11) return fail("Telefone inválido.");
+  if (!validCPF(doc)) return fail("CPF inválido.");
+
+  // Parâmetros de rastreamento aceitos pela PinguPag (UTMify)
+  const t = b.tracking || {};
+  const tracking = {};
+  for (const k of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "src", "sck"]) if (t[k]) tracking[k] = str(t[k], 300);
+
+  const reference = `ARM-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+  const origin = new URL(req.url).origin;
+
+  try {
+    const { ok, status, json } = await pingu("/gateway/v1/transaction", {
+      method: "POST",
+      body: JSON.stringify({
+        amount,
+        description: PRODUCT_NAME,
+        reference,
+        postback_url: `${origin}/api/webhook`,
+        source: "api_externa",
+        customer: { name, email, phone, document: doc },
+        address: { street: str(a.street), number: str(a.number, 20), complement: str(a.complement), neighborhood: str(a.neighborhood), city: str(a.city), state: str(a.state, 2).toUpperCase(), zipcode: digits(a.zipCode) },
+        tracking,
+      }),
+    });
+    if (!ok || !json || json.status !== "success" || !json.qr_code) {
+      console.error("PinguPag erro", status, JSON.stringify(json));
+      return fail("Não foi possível gerar o Pix agora. Tente novamente em instantes.", 502);
+    }
+    return Response.json({ success: true, data: { pixCode: json.qr_code, qrCodeImage: json.qr_code_base64 || null, externalRef: reference, expiresAt: json.expires_at || null } });
+  } catch (e) {
+    console.error("create-pix", e.message);
+    return fail("Pagamento indisponível no momento.", 502);
+  }
+}

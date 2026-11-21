@@ -107,13 +107,15 @@ $("#sheet-close").onclick = close; $("#sheet-bg").onclick = close;
 // Sem variante escolhida o link não tem href: não faz nada
 $("#sheet-buy").addEventListener("click", (e) => { if (!pick) e.preventDefault(); });
 
-// ---- Frete grátis personalizado pela cidade (geolocalização aproximada pelo IP, via servidor). Sem dado = texto padrão ----
+// ---- Frete grátis personalizado pelo ESTADO ("para São Paulo e região"), via geolocalização aproximada do IP no servidor ----
+const ESTADOS = { AC: "Acre", AL: "Alagoas", AP: "Amapá", AM: "Amazonas", BA: "Bahia", CE: "Ceará", DF: "o Distrito Federal", ES: "Espírito Santo", GO: "Goiás", MA: "Maranhão", MT: "Mato Grosso", MS: "Mato Grosso do Sul", MG: "Minas Gerais", PA: "Pará", PB: "Paraíba", PR: "Paraná", PE: "Pernambuco", PI: "Piauí", RJ: "Rio de Janeiro", RN: "Rio Grande do Norte", RS: "Rio Grande do Sul", RO: "Rondônia", RR: "Roraima", SC: "Santa Catarina", SP: "São Paulo", SE: "Sergipe", TO: "Tocantins" };
 (async function geoShipping() {
   try {
     const g = await (await fetch("/api/geo", { cache: "no-store" })).json();
-    if (!g || !g.city || !g.uf) return;
-    const place = `${g.city} - ${g.uf}`;
-    $("#geo-top").textContent = `Frete grátis para ${place}`;
-    $("#geo-ship").textContent = `Frete Grátis para ${place} e todo o Brasil!`;
+    const nome = g && ESTADOS[g.uf];
+    if (!nome) return;                       // sem dado: mantém o texto padrão
+    const lugar = g.uf === "DF" ? "Distrito Federal" : nome;
+    $("#geo-top").textContent = `Frete grátis para ${lugar} e região`;
+    $("#geo-ship").textContent = `Frete Grátis para ${lugar} e região (e todo o Brasil)!`;
   } catch {}
 })();

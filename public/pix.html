@@ -12,7 +12,7 @@
   <!-- Topo -->
   <div class="bg-white border-b border-gray-200 px-4 py-3">
     <div class="flex items-center justify-between">
-      <a href="/checkout" class="p-1 text-gray-700" aria-label="Voltar"><span id="ic-back"></span></a>
+      <button onclick="history.length>1?history.back():location.href='/'" class="p-1 text-gray-700" aria-label="Voltar"><span id="ic-back"></span></button>
       <p class="text-[15px] font-semibold text-gray-900">Pagamento via Pix</p>
       <span class="w-7 text-emerald-600" title="Compra segura">🔒</span>
     </div>

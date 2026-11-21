@@ -155,7 +155,7 @@
     <a href="/contato" class="flex flex-col items-center text-[10px] text-gray-500 w-10"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Loja</a>
     <a href="/contato" class="flex flex-col items-center text-[10px] text-gray-500 w-10"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 01-12.4 7.4L3 21l1.9-5.6A8.5 8.5 0 1121 11.5z"/></svg>Chat</a>
     <button class="open-sheet flex-1 text-sm font-semibold text-red-600 leading-tight">Adicionar ao<br/>carrinho</button>
-    <button class="open-sheet flex-1 rounded-lg bg-red-600 text-white text-sm font-bold uppercase py-2.5">Comprar agora</button>
+    <button class="open-sheet lbl flex-1 flex items-center justify-center rounded-lg bg-red-600 text-white text-sm font-bold uppercase py-2.5" data-label="Comprar agora"></button>
   </div></div>
 
   <!-- Sheet de variantes -->
@@ -167,7 +167,7 @@
       <div class="grid grid-cols-3 gap-2 mb-4" id="sheet-g1"></div>
       <p class="text-xs font-bold text-gray-700 mb-2">COMPRE 2 LEVE 4:</p>
       <div class="grid grid-cols-3 gap-2 mb-5" id="sheet-g2"></div>
-      <button id="sheet-buy" disabled class="w-full rounded-full py-3 text-sm font-bold text-white bg-gray-300 cursor-not-allowed">Comprar agora</button>
+      <a id="sheet-buy" aria-disabled="true" class="lbl flex items-center justify-center w-full rounded-full py-3 text-sm font-bold text-white bg-gray-300 cursor-not-allowed" data-label="Comprar agora"></a>
     </div>
   </div>
 </div>

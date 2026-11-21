@@ -5,7 +5,7 @@ $("#up-items").innerHTML = items.map((b) => `<li class="flex items-center gap-3"
 $("#up-old").textContent = brl(sum);
 $("#up-price").textContent = brl(U.price);
 $("#up-save").textContent = sum > U.price ? `Você economiza ${brl(sum - U.price)} (${Math.round((1 - U.price / sum) * 100)}% OFF)` : "";
-$("#up-yes-label").textContent = `SIM! Quero comprar agora por ${brl(U.price)}`;
+$("#up-yes-label").dataset.label = `SIM! Quero comprar agora por ${brl(U.price)}`;
 $("#up-no").href = withUtms("/confirmado");
 
 // A página abre sempre (inclusive direto pela URL). Se não há pedido anterior, pedimos os 4 dados básicos.
@@ -42,7 +42,7 @@ $("#up-yes").onclick = async () => {
     buyer = data; store.set("buyer", data);
   }
   $("#up-err").classList.add("hidden");
-  const btn = $("#up-yes"); btn.disabled = true; $("#up-spin").classList.remove("hidden"); $("#up-yes-label").textContent = "Gerando seu Pix…";
+  const btn = $("#up-yes"); btn.disabled = true; $("#up-spin").classList.remove("hidden"); $("#up-yes-label").dataset.label = "Gerando seu Pix…";
   const ids = (() => { const ck = (n) => (document.cookie.match(new RegExp("(?:^|; )" + n + "=([^;]*)")) || [])[1]; return { fbp: ck("_fbp") || "", fbc: ck("_fbc") || "", sourceUrl: location.origin + "/upsell" }; })();
   try {
     if (!S.PIX_ENDPOINT) throw new Error("Pagamento indisponível no momento.");
@@ -51,5 +51,5 @@ $("#up-yes").onclick = async () => {
     if (!r.ok || !j.success) throw new Error(j.error || "Não foi possível gerar o Pix. Tente novamente.");
     store.set("pix", { ...j.data, total: U.price, kind: "upsell", qty: 1, units: 1 });
     location.href = withUtms("/pix");
-  } catch (e) { err(e.message); btn.disabled = false; $("#up-spin").classList.add("hidden"); $("#up-yes-label").textContent = `SIM! Quero comprar agora por ${brl(U.price)}`; }
+  } catch (e) { err(e.message); btn.disabled = false; $("#up-spin").classList.add("hidden"); $("#up-yes-label").dataset.label = `SIM! Quero comprar agora por ${brl(U.price)}`; }
 };

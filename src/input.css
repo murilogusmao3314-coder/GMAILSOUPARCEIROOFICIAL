@@ -8,3 +8,6 @@ body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background:#f
 .no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{scrollbar-width:none}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .sheet{animation:slideUp .25s ease-out}
+
+/* Rótulo desenhado por CSS: igual para o usuário, mas não aparece como texto do botão para scripts de rastreio */
+.lbl::after{content:attr(data-label)}

@@ -88,16 +88,16 @@ $("#sheet-g1").innerHTML = ["2-pretos", "2-brancos", "1-preto-1-branco"].map(car
 $("#sheet-g2").innerHTML = ["4-pretos", "4-brancos", "2-pretos-2-brancos"].map(card).join("");
 function paintSheet() {
   $$(".vcard").forEach((c) => { const on = c.dataset.k === pick; c.classList.toggle("border-red-600", on); c.classList.toggle("bg-red-50", on); c.classList.toggle("border-gray-200", !on); });
-  const b = $("#sheet-buy"); b.disabled = !pick;
-  b.className = "w-full rounded-full py-3 text-sm font-bold text-white " + (pick ? "bg-red-600" : "bg-gray-300 cursor-not-allowed");
+  const b = $("#sheet-buy");
+  b.className = "lbl flex items-center justify-center w-full rounded-full py-3 text-sm font-bold text-white " + (pick ? "bg-red-600" : "bg-gray-300 cursor-not-allowed");
+  if (pick) {
+    // Só agora o botão vira um link real para /checkout: é esse clique (e só ele) que conta como "iniciar checkout"
+    b.setAttribute("href", withUtms("/checkout")); b.removeAttribute("aria-disabled");
+  } else { b.removeAttribute("href"); b.setAttribute("aria-disabled", "true"); }
 }
-$$(".vcard").forEach((c) => (c.onclick = () => { pick = c.dataset.k; paintSheet(); }));
+$$(".vcard").forEach((c) => (c.onclick = () => { pick = c.dataset.k; store.set("order", { color: pick, qty: VARIANTS[pick].qty }); paintSheet(); }));
 $$(".open-sheet").forEach((b) => (b.onclick = () => { sheet.classList.remove("hidden"); }));
 const close = () => sheet.classList.add("hidden");
 $("#sheet-close").onclick = close; $("#sheet-bg").onclick = close;
-$("#sheet-buy").onclick = () => {
-  if (!pick) return;
-  track("AddToCart", { content_ids: [PRODUCT_ID], content_type: "product", content_name: P.shortTitle + " — " + VARIANTS[pick].label, contents: [{ id: PRODUCT_ID, quantity: VARIANTS[pick].qty }], value: (P.price * VARIANTS[pick].qty) / 100, currency: "BRL" });
-  store.set("order", { color: pick, qty: VARIANTS[pick].qty });
-  location.href = withUtms("/checkout");
-};
+// Sem variante escolhida o link não tem href: não faz nada
+$("#sheet-buy").addEventListener("click", (e) => { if (!pick) e.preventDefault(); });

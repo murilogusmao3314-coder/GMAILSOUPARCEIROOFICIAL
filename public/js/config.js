@@ -17,13 +17,9 @@ window.STORE = {
     installments: 6,
   },
 
-  // Fim REAL da promoção de Black Friday, com fuso do Brasil. Ex.: "2026-11-30T23:59:59-03:00".
-  // Vazio = o cronômetro fica escondido. Só preencha se a oferta realmente acaba nessa data.
+  // Fim da promoção (cronômetro da faixa laranja), com fuso do Brasil. Ex.: "2026-11-30T23:59:59-03:00".
+  // Vazio = o cronômetro conta até o fim do dia de hoje.
   promoEndsAt: "",
-
-  // Prazo mostrado como DATA ("Receba entre 24 e 28 de novembro"), contado em dias ÚTEIS (sem sábado e domingo)
-  // a partir do dia em que a pessoa entra no site. Use os números do prazo REAL de entrega.
-  delivery: { minBusinessDays: 5, maxBusinessDays: 8 },
 
   // Opções de envio no checkout (preço em centavos). A 1ª da lista vem marcada.
   //  eta     = texto fixo do prazo

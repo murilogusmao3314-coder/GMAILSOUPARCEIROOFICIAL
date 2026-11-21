@@ -39,4 +39,4 @@ Projeto Next.js (compatível com v0/Vercel): as páginas ficam em `public/` e `n
 
 ## UTMify
 Em todas as páginas: `window.pixelId` + `cdn.utmify.com.br/scripts/pixel/pixel.js` e o script de UTMs (`.../utms/latest.js`).
-Os UTMs da primeira visita são guardados e enviados junto com o pedido no campo `tracking` do `PIX_ENDPOINT`, para o gateway repassar à UTMify.
+Todos os parâmetros da URL de entrada (UTMs, fbclid e qualquer outro) são guardados em `localStorage` (chave `url_params`) e anexados a todo link/navegação interna (home → checkout → Pix → obrigado). Também vão no campo `tracking` do `PIX_ENDPOINT`.

@@ -50,15 +50,41 @@ document.addEventListener("error", (e) => {
   setTimeout(() => { el.src = el.src.split("?")[0] + "?r=" + (n + 1) + Date.now(); }, 800 * (n + 1));
 }, true);
 
-// ---- UTMs: guarda os parâmetros de campanha da 1ª visita e leva adiante (home -> checkout -> Pix) ----
-const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "src", "sck", "xcod", "fbclid"];
-(function captureUtms() {
+// ---- Parâmetros de URL (UTMs, fbclid, qualquer outro): guardados e levados até o fim do funil ----
+// Guardamos TODOS os parâmetros da URL de entrada (ex.: ?utm_source=FB&utm_campaign=nome|id&...&AAAA=1)
+// em localStorage (com cópia em sessionStorage) e anexamos a cada link/navegação interna.
+const PARAMS_KEY = "url_params";
+function readParams() {
+  try { const v = JSON.parse(localStorage.getItem(PARAMS_KEY)); if (v) return v; } catch {}
+  return store.get(PARAMS_KEY) || {};
+}
+function saveParams(obj) {
+  try { localStorage.setItem(PARAMS_KEY, JSON.stringify(obj)); } catch {}
+  store.set(PARAMS_KEY, obj);
+}
+(function captureParams() {
   try {
-    const q = new URLSearchParams(location.search), saved = store.get("utms") || {};
-    UTM_KEYS.forEach((k) => { if (q.get(k)) saved[k] = q.get(k); });
-    store.set("utms", saved);
+    const q = new URLSearchParams(location.search), saved = readParams();
+    q.forEach((v, k) => { saved[k] = v; });   // novos valores substituem os antigos; os demais são mantidos
+    saveParams(saved);
   } catch {}
 })();
-const getUtms = () => store.get("utms") || {};
-// Mantém a query string (UTMs) ao navegar entre páginas
-const withUtms = (url) => { const u = getUtms(), qs = new URLSearchParams(u).toString(); return qs ? url + (url.includes("?") ? "&" : "?") + qs : url; };
+const getUtms = () => readParams();
+// Acrescenta os parâmetros guardados à URL (sem duplicar os que ela já tem)
+function withUtms(url) {
+  try {
+    const u = new URL(url, location.origin);
+    if (u.origin !== location.origin) return url;
+    const saved = readParams();
+    Object.keys(saved).forEach((k) => { if (!u.searchParams.has(k)) u.searchParams.set(k, saved[k]); });
+    return u.pathname + u.search + u.hash;
+  } catch { return url; }
+}
+// Qualquer clique em link interno leva os parâmetros junto
+document.addEventListener("click", (e) => {
+  const a = e.target.closest && e.target.closest("a[href]");
+  if (!a) return;
+  const h = a.getAttribute("href");
+  if (!h || h.startsWith("#") || /^(mailto:|tel:|javascript:)/i.test(h)) return;
+  a.setAttribute("href", withUtms(h));
+}, true);

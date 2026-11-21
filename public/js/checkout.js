@@ -90,6 +90,6 @@ $("#buy").onclick = async () => {
     store.set("pix", { ...j.data, total, email: payload.customer.email, qty: qty + bumps.length });
     store.set("paid", null);
     trackCustom("PixGerado", evData(total));
-    location.href = "/pix";
+    location.href = withUtms("/pix");
   } catch (e) { showErr(e.message); btn.disabled = false; btn.textContent = "Fazer pedido"; }
 };

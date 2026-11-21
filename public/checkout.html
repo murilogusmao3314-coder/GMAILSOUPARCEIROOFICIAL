@@ -25,7 +25,6 @@
     </div>
     <div class="w-6"></div>
   </div>
-  <div id="err" class="hidden px-4 py-2 bg-red-50 border-b border-red-200"><p class="text-sm text-red-600 font-medium text-center" id="err-msg"></p></div>
 
   <form id="form" class="bg-white border-b border-gray-100" novalidate autocomplete="on">
     <!-- 1. Dados pessoais -->
@@ -108,6 +107,7 @@
   </div>
 
   <div class="fixed bottom-0 inset-x-0 z-40"><div class="max-w-md mx-auto bg-white border-t border-gray-200 px-4 py-3 shadow-[0_-4px_12px_rgba(0,0,0,.06)]">
+    <p id="bar-err" class="hidden mb-2 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs font-semibold px-3 py-2"></p>
     <div class="flex items-center justify-between mb-3"><span class="font-semibold text-sm" id="bar-label"></span><b class="text-xl text-red-600" id="bar-total"></b></div>
     <button id="buy" class="w-full rounded-xl bg-pink-500 text-white font-bold py-3.5 disabled:opacity-60">Fazer pedido</button>
   </div></div>
@@ -117,7 +117,9 @@
 .inp::placeholder{color:#6b7280;opacity:1;-webkit-text-fill-color:#6b7280}
 .inp::-webkit-input-placeholder{color:#6b7280;opacity:1;-webkit-text-fill-color:#6b7280}
 .inp:focus{border-color:#e60000;box-shadow:0 0 0 3px rgba(230,0,0,.12)}
-.inp.bad{border-color:#e60000}
+.inp.bad{border-color:#e60000;background-color:#fff5f5}
+.field-err{color:#dc2626;font-size:12px;font-weight:600;margin-top:4px}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}.shake{animation:shake .3s 2}
 .inp:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #fff inset;-webkit-text-fill-color:#111827}
 </style>
 <script src="/js/config.js"></script>

@@ -71,7 +71,24 @@ render();
 const evData = (total) => ({ content_ids: [PRODUCT_ID], content_type: "product", num_items: qty + bumps.length, value: total / 100, currency: "BRL" });
 track("InitiateCheckout", evData(render()));
 
-function showErr(m, el) { $("#err").classList.remove("hidden"); $("#err-msg").textContent = "⚠️ " + m; $$(".inp").forEach((i) => i.classList.remove("bad")); if (el) { el.classList.add("bad"); el.focus(); } window.scrollTo({ top: 0, behavior: "smooth" }); }
+// Mostra o erro ONDE a pessoa precisa ver: embaixo do campo (rolando até ele) e junto ao botão "Fazer pedido"
+function clearErr() {
+  $$(".inp.bad").forEach((i) => i.classList.remove("bad", "shake"));
+  $$(".field-err").forEach((e) => e.remove());
+  $("#bar-err").classList.add("hidden");
+}
+function showErr(m, el) {
+  clearErr();
+  const bar = $("#bar-err"); bar.textContent = "⚠️ " + m; bar.classList.remove("hidden");
+  if (!el) return;
+  el.classList.add("bad", "shake");
+  const wrap = el.parentElement.classList.contains("relative") ? el.parentElement.parentElement : el.parentElement;
+  const p = document.createElement("p"); p.className = "field-err"; p.textContent = m; wrap.appendChild(p);
+  el.scrollIntoView({ behavior: "smooth", block: "center" });   // rola até o campo com problema
+  setTimeout(() => el.focus({ preventScroll: true }), 350);
+}
+// Ao corrigir o campo, o erro some
+$$(".inp").forEach((i) => i.addEventListener("input", () => { if (i.classList.contains("bad")) clearErr(); }));
 function validate() {
   const f = (id) => $("#" + id);
   const checks = [
@@ -81,7 +98,7 @@ function validate() {
     [validCPF(f("cpf").value), "Insira um CPF válido", "cpf"],
   ];
   for (const [ok, msg, id] of checks) if (!ok) { showErr(msg, f(id)); return false; }
-  $("#err").classList.add("hidden"); return true;
+  clearErr(); return true;
 }
 
 // fbp/fbc (cookies da Meta) para a API de Conversões casar a compra com o clique no anúncio

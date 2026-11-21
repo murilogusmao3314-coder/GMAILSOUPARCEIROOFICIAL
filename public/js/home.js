@@ -69,8 +69,8 @@ const REVIEWS = [
 ];
 $("#reviews").innerHTML = REVIEWS.map(([n, d, t, u], i) => `
   <div class="pb-4 mb-4 border-b border-gray-100">
-    <div class="flex justify-between"><b class="text-sm">${n}</b><span class="text-xs text-gray-400">${d}</span></div>
-    <div class="text-yellow-400 my-1">★★★★★</div>
+    <div class="flex items-center gap-2.5"><span class="h-9 w-9 shrink-0 rounded-full bg-orange-100 text-orange-600 text-sm font-bold flex items-center justify-center">${n[0]}</span><div class="flex flex-1 min-w-0 items-center justify-between"><b class="text-sm">${n}</b><span class="text-xs text-gray-400">${d}</span></div></div>
+    <div class="text-yellow-400 my-1.5">★★★★★</div>
     <p class="text-sm text-gray-600 leading-relaxed">${t}</p>
     <div class="flex items-center gap-3 mt-3"><button type="button" class="rv-thumb shrink-0 rounded-lg" data-i="${i}" aria-label="Ampliar foto de ${n}"><img src="/assets/review-${i + 1}.jpg" decoding="async" alt="Foto enviada por ${n}" class="h-16 w-16 rounded-lg object-cover border border-gray-100"/></button><span class="text-xs text-gray-500">Útil (${u})</span></div>
   </div>`).join("");

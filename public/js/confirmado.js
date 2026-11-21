@@ -6,8 +6,10 @@ const v = Object.values(VARIANTS).find((x) => x.label === main.variant) || VARIA
 $("#c-img").src = v.img; $("#c-prod").textContent = S.product.shortTitle;
 $("#c-var").textContent = main.variant ? `${main.variant} • ${main.units || 1}x${main.extras ? ` • +${main.extras} extra(s)` : ""}` : "";
 $("#c-code").textContent = main.ref ? "#" + main.ref.slice(-6) : "";
+// Comprou só o kit (sem o pedido principal): esconde a linha do armário
+if (!main.ref) $("#c-img").closest(".flex.gap-3").classList.add("hidden");
 let total = main.total || 0;
-if (store.get("upsellPaid")) { $("#c-up").classList.remove("hidden"); $("#c-up-img").src = S.upsell.image; $("#c-up-name").textContent = S.upsell.name; total += S.upsell.price; }
+if (store.get("upsellPaid")) { $("#c-up").classList.remove("hidden"); if (!main.ref) $("#c-up").classList.remove("mt-3"); $("#c-up-img").src = S.upsell.image; $("#c-up-name").textContent = S.upsell.name; total += S.upsell.price; }
 $("#c-total").textContent = total ? brl(total) : "";
 if (buyer.customer && buyer.customer.email) $("#c-mail").textContent = buyer.customer.email;
 const sh = buyer.shipping || {};

@@ -8,12 +8,40 @@ $("#up-save").textContent = sum > U.price ? `Você economiza ${brl(sum - U.price
 $("#up-yes-label").textContent = `SIM! Quero comprar agora por ${brl(U.price)}`;
 $("#up-no").href = withUtms("/confirmado");
 
-// A página abre sempre (inclusive direto pela URL). Só o botão "comprar" precisa dos dados do pedido.
-const buyer = store.get("buyer");
+// A página abre sempre (inclusive direto pela URL). Se não há pedido anterior, pedimos os 4 dados básicos.
+let buyer = store.get("buyer");
+const udig = (v) => v.replace(/\D/g, "");
+const umask = {
+  "u-cpf": (v) => { const t = udig(v).slice(0, 11); return t.length <= 3 ? t : t.length <= 6 ? `${t.slice(0,3)}.${t.slice(3)}` : t.length <= 9 ? `${t.slice(0,3)}.${t.slice(3,6)}.${t.slice(6)}` : `${t.slice(0,3)}.${t.slice(3,6)}.${t.slice(6,9)}-${t.slice(9)}`; },
+  "u-phone": (v) => { const t = udig(v).slice(0, 11); return t.length <= 2 ? t : t.length <= 7 ? `(${t.slice(0,2)}) ${t.slice(2)}` : `(${t.slice(0,2)}) ${t.slice(2,7)}-${t.slice(7)}`; },
+};
+function uvalidCPF(v) {
+  const t = udig(v); if (t.length !== 11 || /^(\d)\1{10}$/.test(t)) return false;
+  for (const n of [9, 10]) { let s = 0; for (let i = 0; i < n; i++) s += +t[i] * (n + 1 - i); let d = (s * 10) % 11; if (d === 10) d = 0; if (d !== +t[n]) return false; }
+  return true;
+}
+const hasBuyer = !!(buyer && buyer.customer && buyer.customer.document && buyer.customer.document.number);
+if (!hasBuyer) {
+  $("#up-form").classList.remove("hidden");
+  Object.keys(umask).forEach((id) => $("#" + id).addEventListener("input", (e) => (e.target.value = umask[id](e.target.value))));
+}
+function readForm() {
+  const g = (id) => $("#" + id).value.trim();
+  if (g("u-name").split(/\s+/).filter(Boolean).length < 2) return ["Insira seu nome completo (nome e sobrenome)", "u-name"];
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(g("u-email"))) return ["Insira um e-mail válido", "u-email"];
+  if (udig(g("u-phone")).length < 10) return ["Insira um telefone válido com DDD", "u-phone"];
+  if (!uvalidCPF(g("u-cpf"))) return ["Insira um CPF válido", "u-cpf"];
+  return [null, null, { customer: { name: g("u-name"), email: g("u-email"), phone: udig(g("u-phone")), document: { number: udig(g("u-cpf")), type: "cpf" } }, shipping: {} }];
+}
 
 function err(m) { const e = $("#up-err"); e.textContent = "⚠️ " + m; e.classList.remove("hidden"); }
 $("#up-yes").onclick = async () => {
-  if (!buyer || !buyer.customer) { err("Para comprar esta oferta, finalize primeiro um pedido na loja."); return; }
+  if (!hasBuyer) {
+    const [msg, id, data] = readForm();
+    if (msg) { err(msg); $("#" + id).focus(); return; }
+    buyer = data; store.set("buyer", data);
+  }
+  $("#up-err").classList.add("hidden");
   const btn = $("#up-yes"); btn.disabled = true; $("#up-spin").classList.remove("hidden"); $("#up-yes-label").textContent = "Gerando seu Pix…";
   const ids = (() => { const ck = (n) => (document.cookie.match(new RegExp("(?:^|; )" + n + "=([^;]*)")) || [])[1]; return { fbp: ck("_fbp") || "", fbc: ck("_fbc") || "", sourceUrl: location.origin + "/upsell" }; })();
   try {

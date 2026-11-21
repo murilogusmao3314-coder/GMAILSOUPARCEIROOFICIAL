@@ -106,3 +106,14 @@ const close = () => sheet.classList.add("hidden");
 $("#sheet-close").onclick = close; $("#sheet-bg").onclick = close;
 // Sem variante escolhida o link não tem href: não faz nada
 $("#sheet-buy").addEventListener("click", (e) => { if (!pick) e.preventDefault(); });
+
+// ---- Frete grátis personalizado pela cidade (geolocalização aproximada pelo IP, via servidor). Sem dado = texto padrão ----
+(async function geoShipping() {
+  try {
+    const g = await (await fetch("/api/geo", { cache: "no-store" })).json();
+    if (!g || !g.city || !g.uf) return;
+    const place = `${g.city} - ${g.uf}`;
+    $("#geo-top").textContent = `Frete grátis para ${place}`;
+    $("#geo-ship").textContent = `Frete Grátis para ${place} e todo o Brasil!`;
+  } catch {}
+})();

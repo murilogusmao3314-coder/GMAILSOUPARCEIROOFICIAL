@@ -8,12 +8,12 @@ $("#up-save").textContent = sum > U.price ? `Você economiza ${brl(sum - U.price
 $("#up-yes-label").textContent = `SIM! Quero comprar agora por ${brl(U.price)}`;
 $("#up-no").href = withUtms("/confirmado");
 
-// Sem pedido pago nesta sessão -> não faz sentido mostrar a oferta
+// A página abre sempre (inclusive direto pela URL). Só o botão "comprar" precisa dos dados do pedido.
 const buyer = store.get("buyer");
-if (!buyer || store.get("upsellPaid")) location.replace(withUtms("/confirmado"));
 
 function err(m) { const e = $("#up-err"); e.textContent = "⚠️ " + m; e.classList.remove("hidden"); }
 $("#up-yes").onclick = async () => {
+  if (!buyer || !buyer.customer) { err("Para comprar esta oferta, finalize primeiro um pedido na loja."); return; }
   const btn = $("#up-yes"); btn.disabled = true; $("#up-spin").classList.remove("hidden"); $("#up-yes-label").textContent = "Gerando seu Pix…";
   const ids = (() => { const ck = (n) => (document.cookie.match(new RegExp("(?:^|; )" + n + "=([^;]*)")) || [])[1]; return { fbp: ck("_fbp") || "", fbc: ck("_fbc") || "", sourceUrl: location.origin + "/upsell" }; })();
   try {

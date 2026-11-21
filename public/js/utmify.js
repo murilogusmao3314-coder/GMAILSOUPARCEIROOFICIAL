@@ -1,7 +1,7 @@
 /* UTMify — pixel + script de UTMs. TROCAR DE CONTA/BM = mudar só a linha abaixo.
    O ID vem do painel da UTMify: Pixels > (seu pixel) > código de instalação > window.pixelId */
 (function () {
-  var PIXEL_ID = "6b0129f6a2e5630e45fa9e10";
+  var PIXEL_ID = "6b01db001da9d0585cd2f76d";
 
   window.pixelId = PIXEL_ID;
   function add(src, attrs) {

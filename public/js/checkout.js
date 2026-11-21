@@ -76,7 +76,7 @@ $("#buy").onclick = async () => {
   if (!validate()) return;
   const total = render(), btn = $("#buy"), g = (id) => $("#" + id).value.trim();
   const payload = {
-    color: order.color, quantity: qty, amount: total, shippingOption: shipId, extras: bumps,
+    tracking: getUtms(), color: order.color, quantity: qty, amount: total, shippingOption: shipId, extras: bumps,
     customer: { name: g("name"), email: g("email"), phone: digits(g("phone")), document: { number: digits(g("cpf")), type: "cpf" } },
     shipping: { street: g("street"), number: g("number"), complement: g("complement"), neighborhood: g("district"), city: g("city"), state: g("uf").toUpperCase(), zipCode: digits(g("cep")) },
   };

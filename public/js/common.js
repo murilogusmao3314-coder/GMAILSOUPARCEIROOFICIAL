@@ -49,3 +49,16 @@ document.addEventListener("error", (e) => {
   el.dataset.retry = n + 1;
   setTimeout(() => { el.src = el.src.split("?")[0] + "?r=" + (n + 1) + Date.now(); }, 800 * (n + 1));
 }, true);
+
+// ---- UTMs: guarda os parâmetros de campanha da 1ª visita e leva adiante (home -> checkout -> Pix) ----
+const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "src", "sck", "xcod", "fbclid"];
+(function captureUtms() {
+  try {
+    const q = new URLSearchParams(location.search), saved = store.get("utms") || {};
+    UTM_KEYS.forEach((k) => { if (q.get(k)) saved[k] = q.get(k); });
+    store.set("utms", saved);
+  } catch {}
+})();
+const getUtms = () => store.get("utms") || {};
+// Mantém a query string (UTMs) ao navegar entre páginas
+const withUtms = (url) => { const u = getUtms(), qs = new URLSearchParams(u).toString(); return qs ? url + (url.includes("?") ? "&" : "?") + qs : url; };

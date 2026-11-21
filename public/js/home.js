@@ -99,5 +99,5 @@ $("#sheet-buy").onclick = () => {
   if (!pick) return;
   track("AddToCart", { content_ids: [PRODUCT_ID], content_type: "product", content_name: P.shortTitle + " — " + VARIANTS[pick].label, contents: [{ id: PRODUCT_ID, quantity: VARIANTS[pick].qty }], value: (P.price * VARIANTS[pick].qty) / 100, currency: "BRL" });
   store.set("order", { color: pick, qty: VARIANTS[pick].qty });
-  location.href = "/checkout";
+  location.href = withUtms("/checkout");
 };

@@ -36,3 +36,7 @@ Projeto Next.js (compatível com v0/Vercel): as páginas ficam em `public/` e `n
 - `AddPaymentInfo` — clicar em "Fazer pedido" com os dados válidos
 - `PixGerado` (personalizado) — Pix gerado
 - `Purchase` — **somente** quando o pagamento é confirmado (`PIX_STATUS_ENDPOINT` retorna `paid:true`) e só uma vez por pedido
+
+## UTMify
+Em todas as páginas: `window.pixelId` + `cdn.utmify.com.br/scripts/pixel/pixel.js` e o script de UTMs (`.../utms/latest.js`).
+Os UTMs da primeira visita são guardados e enviados junto com o pedido no campo `tracking` do `PIX_ENDPOINT`, para o gateway repassar à UTMify.

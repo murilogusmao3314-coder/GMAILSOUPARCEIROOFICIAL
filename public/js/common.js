@@ -39,3 +39,13 @@ function footerHTML() {
     <p class="text-center">© ${new Date().getFullYear()} ${S.name}. ${S.company} — CNPJ ${S.cnpj}</p>
   </footer>`;
 }
+
+// Se alguma imagem falhar ao carregar (rede instável), tenta de novo até 2 vezes.
+document.addEventListener("error", (e) => {
+  const el = e.target;
+  if (el.tagName !== "IMG") return;
+  const n = +(el.dataset.retry || 0);
+  if (n >= 2) return;
+  el.dataset.retry = n + 1;
+  setTimeout(() => { el.src = el.src.split("?")[0] + "?r=" + (n + 1) + Date.now(); }, 800 * (n + 1));
+}, true);

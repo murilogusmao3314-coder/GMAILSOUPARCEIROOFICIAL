@@ -66,7 +66,7 @@ $("#reviews").innerHTML = REVIEWS.map(([n, d, t, u], i) => `
     <div class="flex justify-between"><b class="text-sm">${n}</b><span class="text-xs text-gray-400">${d}</span></div>
     <div class="text-yellow-400 my-1">★★★★★</div>
     <p class="text-sm text-gray-600 leading-relaxed">${t}</p>
-    <div class="flex items-center gap-3 mt-3"><img src="/assets/review-${i + 1}.webp" loading="lazy" alt="Foto enviada por ${n}" class="h-16 w-16 rounded-lg object-cover border border-gray-100"/><span class="text-xs text-gray-500">Útil (${u})</span></div>
+    <div class="flex items-center gap-3 mt-3"><img src="/assets/review-${i + 1}.jpg" decoding="async" alt="Foto enviada por ${n}" class="h-16 w-16 rounded-lg object-cover border border-gray-100"/><span class="text-xs text-gray-500">Útil (${u})</span></div>
   </div>`).join("");
 
 // FAQ

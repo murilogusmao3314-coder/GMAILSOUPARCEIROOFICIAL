@@ -21,6 +21,10 @@ window.STORE = {
   // Vazio = o cronômetro fica escondido. Só preencha se a oferta realmente acaba nessa data.
   promoEndsAt: "",
 
+  // Prazo mostrado como DATA ("Receba entre 24 e 28 de novembro"), contado em dias ÚTEIS (sem sábado e domingo)
+  // a partir do dia em que a pessoa entra no site. Use os números do prazo REAL de entrega.
+  delivery: { minBusinessDays: 5, maxBusinessDays: 8 },
+
   // Opções de envio (centavos)
   shipping: [
     { id: "correios", name: "Frete Correios", eta: "7 a 15 dias úteis", price: 0 },

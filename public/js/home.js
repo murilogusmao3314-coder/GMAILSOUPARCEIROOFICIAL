@@ -158,3 +158,22 @@ const ESTADOS = { AC: "Acre", AL: "Alagoas", AP: "Amapá", AM: "Amazonas", BA: "
   box.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; }, { passive: true });
   box.addEventListener("touchend", (e) => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1)); x0 = null; });
 })();
+
+// ---- Prazo de entrega em DATAS (no mês em que a pessoa entrou): "Receba entre 24 e 26 de novembro" ----
+(function etaDates() {
+  const cfg = S.delivery || { minBusinessDays: 5, maxBusinessDays: 8 };
+  const MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+  const addBusiness = (from, n) => {                       // soma dias úteis (pula sábado e domingo)
+    const d = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+    let left = n;
+    while (left > 0) { d.setDate(d.getDate() + 1); const w = d.getDay(); if (w !== 0 && w !== 6) left--; }
+    return d;
+  };
+  const now = new Date();
+  const a = addBusiness(now, cfg.minBusinessDays), b = addBusiness(now, cfg.maxBusinessDays);
+  const txt = a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear()
+    ? `entre ${a.getDate()} e ${b.getDate()} de ${MESES[b.getMonth()]}`
+    : `entre ${a.getDate()} de ${MESES[a.getMonth()]} e ${b.getDate()} de ${MESES[b.getMonth()]}`;
+  $("#eta-top").textContent = `Receba ${txt}`;
+  $("#eta-section").textContent = `Receba ${txt}`;
+})();

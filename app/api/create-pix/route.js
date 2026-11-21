@@ -42,10 +42,11 @@ export async function POST(req) {
   // Endereço: só campos preenchidos (string vazia pode ser tratada como "enviado vazio")
   const address = Object.fromEntries(Object.entries({
     street: str(a.street), number: str(a.number, 20), complement: str(a.complement), neighborhood: str(a.neighborhood),
-    city: str(a.city), state: str(a.state, 2).toUpperCase(), zipcode: digits(a.zipCode),
+    city: str(a.city), state: str(a.state, 2).toUpperCase(), zipcode: digits(a.zipCode).length === 8 ? digits(a.zipCode) : "",
   }).filter(([, v]) => v));
   // Dados do cliente completos; o endereço vai na raiz E dentro de customer (a PinguPag aceita os dois)
-  const customerObj = { name, email, phone, document: doc, address };
+  const hasAddr = Object.keys(address).length > 0;
+  const customerObj = { name, email, phone, document: doc, ...(hasAddr ? { address } : {}) };
   const payload = {
     amount,
     description: title,
@@ -54,7 +55,7 @@ export async function POST(req) {
     // Se você cadastrou o produto no painel da PinguPag, defina PINGUPAG_PRODUCT_HASH na Vercel para vincular a venda a ele
     ...(process.env.PINGUPAG_PRODUCT_HASH ? { productHash: process.env.PINGUPAG_PRODUCT_HASH } : { source: "api_externa" }),
     customer: customerObj,
-    address,
+    ...(hasAddr ? { address } : {}),
     ...(Object.keys(tracking).length ? { tracking } : {}),
   };
   // Log de diagnóstico (SEM dados pessoais): mostra quais campos foram enviados — veja em Vercel > Logs

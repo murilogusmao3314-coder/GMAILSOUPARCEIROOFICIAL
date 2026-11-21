@@ -40,17 +40,21 @@
       <input id="cpf" inputmode="numeric" placeholder="CPF (000.000.000-00)" class="inp" />
     </div>
 
-    <!-- 2. Endereço -->
+    <!-- 2. Endereço (opcional) -->
     <div class="px-4 pt-4 pb-3 flex items-center gap-3 border-y border-gray-100">
       <span class="h-6 w-6 rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center">2</span>
-      <div><p class="text-sm font-semibold text-gray-900">Endereço de entrega</p><p class="text-[11px] text-gray-500">Digite o CEP e preenchemos o resto para você</p></div>
+      <div><p class="text-sm font-semibold text-gray-900">Endereço de entrega <span class="text-xs font-normal text-gray-400">(opcional)</span></p><p class="text-[11px] text-gray-500">Digite o CEP e preenchemos o resto para você</p></div>
     </div>
     <div class="p-4 space-y-3">
-      <input id="cep" name="cep" autocomplete="postal-code" inputmode="numeric" placeholder="CEP" class="inp" />
-      <div class="grid grid-cols-3 gap-3"><input id="uf" maxlength="2" placeholder="UF" class="inp uppercase" /><input id="city" placeholder="Cidade" class="inp col-span-2" /></div>
-      <input id="district" placeholder="Bairro" class="inp" />
-      <input id="street" placeholder="Rua / Avenida" class="inp" />
-      <div class="grid grid-cols-2 gap-3"><input id="number" placeholder="Número" class="inp" /><input id="complement" placeholder="Complemento (opcional)" class="inp" /></div>
+      <input id="cep" name="cep" autocomplete="postal-code" inputmode="numeric" placeholder="CEP (opcional)" class="inp" />
+      <p id="cep-msg" class="hidden text-xs"></p>
+      <button type="button" id="manual" class="text-xs text-red-600 font-medium underline">Não sei meu CEP / preencher o endereço manualmente</button>
+      <div id="addr-fields" class="hidden space-y-3">
+        <div class="grid grid-cols-3 gap-3"><input id="uf" maxlength="2" placeholder="UF" class="inp uppercase" /><input id="city" placeholder="Cidade" class="inp col-span-2" /></div>
+        <input id="district" placeholder="Bairro" class="inp" />
+        <input id="street" placeholder="Rua / Avenida" class="inp" />
+        <div class="grid grid-cols-2 gap-3"><input id="number" placeholder="Número" class="inp" /><input id="complement" placeholder="Complemento (opcional)" class="inp" /></div>
+      </div>
     </div>
   </form>
 

@@ -16,13 +16,31 @@ function validCPF(v) {
 }
 ["cpf", "phone", "cep"].forEach((id) => $("#" + id).addEventListener("input", (e) => (e.target.value = mask[id](e.target.value))));
 
-$("#cep").addEventListener("input", async (e) => {
-  const c = digits(e.target.value); if (c.length !== 8) return;
+// ----- Endereço opcional: CEP preenche sozinho; se falhar, pede para digitar à mão -----
+const showAddr = () => { $("#addr-fields").classList.remove("hidden"); $("#manual").classList.add("hidden"); };
+function cepMsg(text, ok) { const m = $("#cep-msg"); m.textContent = text; m.className = "text-xs " + (ok ? "text-emerald-600" : "text-amber-600"); }
+$("#manual").onclick = () => { showAddr(); $("#street").focus(); };
+let cepSeq = 0;
+async function lookupCep() {
+  const c = digits($("#cep").value), seq = ++cepSeq;
+  if (c.length === 0) { $("#cep-msg").className = "hidden"; return; }
+  if (c.length < 8) return;
+  cepMsg("Buscando endereço…", true);
   try {
     const j = await (await fetch(`https://viacep.com.br/ws/${c}/json/`)).json();
-    if (!j.erro) { $("#uf").value = j.uf || ""; $("#city").value = j.localidade || ""; $("#district").value = j.bairro || ""; $("#street").value = j.logradouro || ""; $("#number").focus(); }
-  } catch {}
-});
+    if (seq !== cepSeq) return;
+    showAddr();
+    if (j.erro) { cepMsg("Não encontramos esse CEP. Preencha o endereço manualmente abaixo.", false); return; }
+    $("#uf").value = j.uf || ""; $("#city").value = j.localidade || ""; $("#district").value = j.bairro || ""; $("#street").value = j.logradouro || "";
+    cepMsg("✓ Endereço encontrado! Confira e informe o número.", true);
+    $("#number").focus();
+  } catch {
+    if (seq !== cepSeq) return;
+    showAddr(); cepMsg("Não conseguimos buscar o CEP agora. Preencha o endereço manualmente abaixo.", false);
+  }
+}
+$("#cep").addEventListener("input", lookupCep);
+$("#cep").addEventListener("blur", () => { const c = digits($("#cep").value); if (c.length > 0 && c.length < 8) { showAddr(); cepMsg("CEP incompleto. Corrija ou preencha o endereço manualmente.", false); } });
 
 function render() {
   const P = S.product, v = VARIANTS[order.color];
@@ -61,12 +79,6 @@ function validate() {
     [/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f("email").value.trim()), "Insira um e-mail válido", "email"],
     [digits(f("phone").value).length >= 10, "Insira um telefone válido com DDD", "phone"],
     [validCPF(f("cpf").value), "Insira um CPF válido", "cpf"],
-    [digits(f("cep").value).length === 8, "Insira um CEP válido", "cep"],
-    [f("uf").value.trim().length === 2, "Selecione o estado (UF)", "uf"],
-    [f("city").value.trim(), "Insira a cidade", "city"],
-    [f("district").value.trim(), "Insira o bairro", "district"],
-    [f("street").value.trim(), "Insira o endereço", "street"],
-    [f("number").value.trim(), "Insira o número", "number"],
   ];
   for (const [ok, msg, id] of checks) if (!ok) { showErr(msg, f(id)); return false; }
   $("#err").classList.add("hidden"); return true;
@@ -87,7 +99,7 @@ $("#buy").onclick = async () => {
   const payload = {
     tracking: getUtms(), meta: metaIds(), color: order.color, quantity: qty, amount: total, shippingOption: shipId, extras: bumps,
     customer: { name: g("name"), email: g("email"), phone: digits(g("phone")), document: { number: digits(g("cpf")), type: "cpf" } },
-    shipping: { street: g("street"), number: g("number"), complement: g("complement"), neighborhood: g("district"), city: g("city"), state: g("uf").toUpperCase(), zipCode: digits(g("cep")) },
+    shipping: { street: g("street"), number: g("number"), complement: g("complement"), neighborhood: g("district"), city: g("city"), state: g("uf").toUpperCase(), zipCode: digits(g("cep")).length === 8 ? digits(g("cep")) : "" },
   };
   track("AddPaymentInfo", { ...evData(total), payment_method: "pix" });
   btn.disabled = true; btn.textContent = "Gerando Pix...";

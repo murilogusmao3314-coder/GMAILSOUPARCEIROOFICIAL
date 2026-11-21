@@ -39,21 +39,33 @@ export async function POST(req) {
     fbp: str(m.fbp, 100) || undefined, fbc: str(m.fbc, 200) || undefined, u: str(m.sourceUrl, 300) || undefined, ip, ua: ua && ua.slice(0, 300),
   };
 
+  // Endereço: só campos preenchidos (string vazia pode ser tratada como "enviado vazio")
+  const address = Object.fromEntries(Object.entries({
+    street: str(a.street), number: str(a.number, 20), complement: str(a.complement), neighborhood: str(a.neighborhood),
+    city: str(a.city), state: str(a.state, 2).toUpperCase(), zipcode: digits(a.zipCode),
+  }).filter(([, v]) => v));
+  // Dados do cliente completos; o endereço vai na raiz E dentro de customer (a PinguPag aceita os dois)
+  const customerObj = { name, email, phone, document: doc, address };
+  const payload = {
+    amount,
+    description: title,
+    reference,
+    postback_url: `${origin}/api/webhook?d=${encodeURIComponent(signToken({ ref: reference, ...tok }))}`,
+    // Se você cadastrou o produto no painel da PinguPag, defina PINGUPAG_PRODUCT_HASH na Vercel para vincular a venda a ele
+    ...(process.env.PINGUPAG_PRODUCT_HASH ? { productHash: process.env.PINGUPAG_PRODUCT_HASH } : { source: "api_externa" }),
+    customer: customerObj,
+    address,
+    ...(Object.keys(tracking).length ? { tracking } : {}),
+  };
+  // Log de diagnóstico (SEM dados pessoais): mostra quais campos foram enviados — veja em Vercel > Logs
+  console.log("[create-pix] enviando", reference, JSON.stringify({
+    customer: { name: !!name, email: !!email, phone: phone.length, document: doc.length },
+    address: Object.keys(address), tracking: Object.keys(tracking), desc: title,
+  }));
+
   try {
-    const { ok, status, json } = await pingu("/gateway/v1/transaction", {
-      method: "POST",
-      body: JSON.stringify({
-        amount,
-        description: title,
-        reference,
-        postback_url: `${origin}/api/webhook?d=${encodeURIComponent(signToken({ ref: reference, ...tok }))}`,
-        // Se você cadastrou o produto no painel da PinguPag, defina PINGUPAG_PRODUCT_HASH na Vercel para vincular a venda a ele
-        ...(process.env.PINGUPAG_PRODUCT_HASH ? { productHash: process.env.PINGUPAG_PRODUCT_HASH } : { source: "api_externa" }),
-        customer: { name, email, phone, document: doc },
-        address: { street: str(a.street), number: str(a.number, 20), complement: str(a.complement), neighborhood: str(a.neighborhood), city: str(a.city), state: str(a.state, 2).toUpperCase(), zipcode: digits(a.zipCode) },
-        tracking,
-      }),
-    });
+    const { ok, status, json } = await pingu("/gateway/v1/transaction", { method: "POST", body: JSON.stringify(payload) });
+    console.log("[create-pix] resposta", reference, status, json && JSON.stringify({ status: json.status, transaction_id: json.transaction_id, id: json.id, acquirer: json.acquirer, attempts: json.attempts, keys: Object.keys(json) }));
     if (!ok || !json || json.status !== "success" || !json.qr_code) {
       console.error("PinguPag erro", status, JSON.stringify(json));
       return fail("Não foi possível gerar o Pix agora. Tente novamente em instantes.", 502);

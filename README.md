@@ -15,7 +15,7 @@ npm run build:css  # recompila o Tailwind após mexer em classes
 ```
 
 ## O que você precisa editar — `js/config.js`
-- Nome da loja, e-mail, telefone, razão social, CNPJ, endereço (aparecem em contato, rodapé e políticas).
+- Nome da loja, e-mail, telefone, razão social, CNPJ, endereço (aparecem em contato, rodapé e políticas). Já preenchido com os dados da Casa Fácil / RCS Sports Management & Solutions LTDA.
 - Preço, preço "de" (use só um preço realmente praticado), frete e produtos extras.
 - **Pix**: o front chama `PIX_ENDPOINT` (seu backend/gateway) com um POST JSON e espera
   `{ "success": true, "data": { "pixCode": "...", "qrCodeImage": "data:image/png;base64,...", "externalRef": "..." } }`.

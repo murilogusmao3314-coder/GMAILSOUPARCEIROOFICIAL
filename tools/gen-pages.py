@@ -6,7 +6,7 @@ pages = {"termos-de-uso": "Termos de Uso", "politica-de-privacidade": "Política
          "trocas-e-devolucoes": "Política de Trocas e Devoluções", "politica-envio": "Política de Envio"}
 def sub(t):
     t = html.escape(t)
-    for a, b in [("contato@casafacil.com", "{{email}}"), ("RCS Sports Management &amp; Solutions LTDA", "{{company}}"), ("64.657.491/0001-20", "{{cnpj}}"), ("cidade do Rio de Janeiro, RJ", "cidade sede da empresa")]:
+    for a, b in [("contato@casafacil.com", "{{email}}"), ("RCS Sports Management &amp; Solutions LTDA", "{{company}}"), ("64.657.491/0001-20", "{{cnpj}}")]:
         t = t.replace(a, b)
     return re.sub(r"\{\{(\w+)\}\}", r'<span data-store="\1"></span>', t)
 tpl = (root / "tools" / "legal-template.html").read_text()

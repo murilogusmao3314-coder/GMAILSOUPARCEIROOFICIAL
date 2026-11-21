@@ -1,13 +1,13 @@
 // ======= CONFIGURAÇÃO DA LOJA — edite aqui =======
 window.STORE = {
-  name: "Sua Loja",                    // nome da loja
-  email: "contato@sualoja.com.br",
-  phone: "(00) 00000-0000",
-  whatsapp: "(00) 00000-0000",
+  name: "Casa Fácil",                    // nome da loja
+  email: "contato@casafacil.com",
+  phone: "(21) 998545120",
+  whatsapp: "(21) 998545120",
   hours: "Seg a Sex: 9h às 18h",
-  company: "RAZÃO SOCIAL DA SUA EMPRESA LTDA",
-  cnpj: "00.000.000/0000-00",
-  address: "Rua Exemplo, 000 - Bairro - Cidade/UF",
+  company: "RCS Sports Management & Solutions LTDA",
+  cnpj: "64.657.491/0001-20",
+  address: "Rua Aylton Vasconcelos, 270 - Apt 202, Jardim Guanabara, Rio de Janeiro - RJ",
 
   product: {
     title: "[PAGUE 1 LEVE 2] Armário de Aço Multifuncional — Organizador Resistente para Cozinha, Banheiro e Lavanderia",

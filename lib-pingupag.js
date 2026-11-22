@@ -106,8 +106,8 @@ export async function sendUtmify({ ref, status, tok, customer, ip, approvedAtMs 
   const token = process.env.UTMIFY_API_TOKEN;
   if (!token) return { skipped: "UTMIFY_API_TOKEN ausente" };
   const vLabel = VARIANT_LABELS[tok.c] || null;
-  const products = tok.up ? [{ id: UPSELL.id, name: UPSELL.name, planId: null, planName: null, quantity: 1, priceInCents: UPSELL.price }] : [{ id: PRODUCT_ID, name: vLabel ? `Armário Multifuncional - ${vLabel}` : PRODUCT_NAME, planId: tok.c || null, planName: vLabel, quantity: tok.q, priceInCents: PRICING.productPrice }];
-  if (!tok.up) for (const id of tok.x || []) products.push({ id: `extra-${id}`, name: BUMP_NAMES[id] || `Extra ${id}`, planId: null, planName: null, quantity: 1, priceInCents: PRICING.bumps[id] });
+  const products = tok.gm ? [{ id: tok.up ? UPSELL.id : PRODUCT_ID, name: tok.pn || (tok.up ? UPSELL.name : PRODUCT_NAME), planId: null, planName: null, quantity: 1, priceInCents: tok.a }] : tok.up ? [{ id: UPSELL.id, name: UPSELL.name, planId: null, planName: null, quantity: 1, priceInCents: UPSELL.price }] : [{ id: PRODUCT_ID, name: vLabel ? `Armário Multifuncional - ${vLabel}` : PRODUCT_NAME, planId: tok.c || null, planName: vLabel, quantity: tok.q, priceInCents: PRICING.productPrice }];
+  if (!tok.up && !tok.gm) for (const id of tok.x || []) products.push({ id: `extra-${id}`, name: BUMP_NAMES[id] || `Extra ${id}`, planId: null, planName: null, quantity: 1, priceInCents: PRICING.bumps[id] });
   const total = tok.a;
   const fee = Math.round(total * (Number(process.env.PINGUPAG_FEE_PERCENT || 0) / 100)) + Number(process.env.PINGUPAG_FEE_FIXED_CENTS || 0);
   const createdAt = utcStr(refTime(ref));

@@ -37,6 +37,7 @@ export async function POST(req) {
   // Token assinado que viaja na postback_url: o webhook usa isto para mandar a venda ao UTMify/Meta
   const tok = {
     a: amount, q: isUp ? 1 : Number(b.quantity), c: isUp ? undefined : b.color, x: isUp ? [] : [...new Set(Array.isArray(b.extras) ? b.extras : [])], ...(isUp ? { up: 1 } : {}), t: tracking,
+    cu: { n: name, e: email, p: phone, d: doc },   // cliente (criptografado no token)
     fbp: str(m.fbp, 100) || undefined, fbc: str(m.fbc, 200) || undefined, u: str(m.sourceUrl, 300) || undefined, ip, ua: ua && ua.slice(0, 300),
   };
 

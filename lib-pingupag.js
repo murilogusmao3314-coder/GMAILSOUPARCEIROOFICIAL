@@ -77,20 +77,22 @@ import crypto from "crypto";
 const secret = () => process.env.WEBHOOK_SECRET || process.env.PINGUPAG_API_KEY || "";
 const b64u = (b) => Buffer.from(b).toString("base64url");
 
-// Token assinado (HMAC) que viaja na postback_url: garante que o aviso é legítimo e traz os dados do clique
+// Token criptografado + autenticado (AES-256-GCM): leva no link do webhook os dados do clique e do cliente,
+// sem ficarem legíveis, e só o próprio site consegue criar/abrir. Qualquer alteração invalida.
+const aesKey = () => crypto.createHash("sha256").update("tok:" + secret()).digest();
 export function signToken(obj) {
-  const body = b64u(JSON.stringify(obj));
-  const sig = crypto.createHmac("sha256", secret()).update(body).digest("base64url");
-  return `${body}.${sig}`;
+  const iv = crypto.randomBytes(12);
+  const c = crypto.createCipheriv("aes-256-gcm", aesKey(), iv);
+  const ct = Buffer.concat([c.update(JSON.stringify(obj), "utf8"), c.final()]);
+  return `${b64u(iv)}.${b64u(ct)}.${b64u(c.getAuthTag())}`;
 }
 export function verifyToken(tok) {
   try {
-    const [body, sig] = String(tok || "").split(".");
-    if (!body || !sig || !secret()) return null;
-    const exp = crypto.createHmac("sha256", secret()).update(body).digest("base64url");
-    const a = Buffer.from(sig), b = Buffer.from(exp);
-    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
-    return JSON.parse(Buffer.from(body, "base64url").toString("utf8"));
+    const [iv, ct, tag] = String(tok || "").split(".");
+    if (!iv || !ct || !tag || !secret()) return null;
+    const d = crypto.createDecipheriv("aes-256-gcm", aesKey(), Buffer.from(iv, "base64url"));
+    d.setAuthTag(Buffer.from(tag, "base64url"));
+    return JSON.parse(Buffer.concat([d.update(Buffer.from(ct, "base64url")), d.final()]).toString("utf8"));
   } catch { return null; }
 }
 

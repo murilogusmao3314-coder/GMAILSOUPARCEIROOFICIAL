@@ -30,6 +30,8 @@ else {
     $("#s-shipv").textContent = "incluso"; $("#s-total").textContent = brl(pix.total);
   }
 
+  $("#s-ref").textContent = pix.externalRef || "";
+
   // ----- Copiar -----
   const label = $("#copy-label");
   $("#copy").onclick = async () => {

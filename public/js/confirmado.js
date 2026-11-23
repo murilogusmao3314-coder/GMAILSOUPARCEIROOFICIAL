@@ -43,3 +43,10 @@ if (buyer.customer && !(sh.street || sh.zipCode)) $("#c-noaddr").classList.remov
     if (alive && el < 7500) requestAnimationFrame(frame); else ctx.clearRect(0, 0, cv.width, cv.height);
   })(start);
 })();
+
+// Link para o cliente mandar a avaliação pelo WhatsApp
+(function () {
+  const a = document.getElementById("c-review"); if (!a) return;
+  const num = "55" + String(S.whatsapp || "").replace(/\D/g, "");
+  a.href = `https://wa.me/${num}?text=${encodeURIComponent("Olá! Recebi meu pedido e quero deixar minha avaliação ⭐⭐⭐⭐⭐\n\nO que achei: \n\n(vou mandar uma foto também)")}`;
+})();

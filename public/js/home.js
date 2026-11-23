@@ -60,17 +60,18 @@ function paintChips() {
 paintChips();
 
 // Avaliações
+// Avaliações de clientes (sem data). [nome, texto, "útil"]
 const REVIEWS = [
-  ["Fernanda R.", "22 Mar 2026", "Amei! Coube tudo no banheiro e veio dois pelo preço de um.", 34],
-  ["Marcos T.", "14 Mar 2026", "Bom custo-benefício. Usei na lavanderia e ficou firme. Material resistente.", 19],
-  ["Juliana S.", "05 Mar 2026", "Que achado! Paguei por um e vieram dois. Coloquei um na cozinha e outro no quarto das crianças. Organização total, entrega rápida e embalagem super segura. Recomendo demais!", 42],
-  ["Ricardo A.", "27 Fev 2026", "Cumpre o que promete. Aguenta peso e os pés ajustáveis ajudam muito.", 15],
-  ["Patrícia G.", "03 Fev 2026", "Lindo! Coloquei na sala perto da TV e ficou super elegante. Ótimo acabamento.", 17],
-  ["Thiago N.", "29 Jan 2026", "Muito bom pro preço. Uso pra guardar ferramentas na garagem e aguenta bem o peso. Recomendo.", 12],
+  ["Fernanda R.", "Confesso que tinha receio de comprar online por causa da promoção \"pague 1 leve 2\", achei que fosse golpe. Mas chegaram OS DOIS armários certinhos em 4 dias úteis. A montagem é super fácil, levei uns 25 minutos cada. O aço é bem grosso, nada balança. Vale cada centavo!", 34],
+  ["Carlos H.", "Que achado! Paguei por um e vieram dois mesmo, igual no anúncio. Coloquei um na cozinha e outro no quarto das crianças para os brinquedos. Organização total, entrega rápida (3 dias) e embalagem super segura. Recomendo demais! Já indiquei pra três amigas.", 19],
+  ["Juliana S.", "Que achado! Paguei por um e vieram dois. Coloquei um na cozinha e outro no quarto das crianças. Organização total, entrega rápida e embalagem super segura. Recomendo demais!", 42],
+  ["Roberto M.", "Pesquisei em vários lugares e o frete grátis aqui foi o que me convenceu — em outro site sai por mais de 250 só um, aqui paguei menos da metade pelos dois. Aguenta bem o peso (coloquei microondas, sanduicheira, liquidificador) e os pés ajustáveis ajudam em piso desnivelado. Produto sério.", 15],
+  ["Patrícia G.", "Apartamento pequeno e essa foi a melhor solução que achei. Ocupa pouco espaço de chão e tem bastante volume interno. Acabei usando como armário de varanda também — não enferruja porque o aço é tratado. Ótimo acabamento, parece muito mais caro do que é.", 17],
+  ["Thiago N.", "Tava na dúvida porque era promoção meio \"boa demais\". Comprei mesmo assim e foi a melhor decisão. Os dois armários chegaram em perfeito estado, frete grátis cumprido, suporte respondeu rápido quando perguntei sobre prazo. Empilhei dois no escritório, ficou show de bola.", 12],
 ];
-$("#reviews").innerHTML = REVIEWS.map(([n, d, t, u], i) => `
+$("#reviews").innerHTML = REVIEWS.map(([n, t, u], i) => `
   <div class="pb-4 mb-4 border-b border-gray-100">
-    <div class="flex items-center gap-2.5"><span class="h-9 w-9 shrink-0 rounded-full bg-orange-100 text-orange-600 text-sm font-bold flex items-center justify-center">${n[0]}</span><div class="flex flex-1 min-w-0 items-center justify-between"><b class="text-sm">${n}</b><span class="text-xs text-gray-400">${d}</span></div></div>
+    <div class="flex items-center gap-2.5"><span class="h-9 w-9 shrink-0 rounded-full bg-orange-100 text-orange-600 text-sm font-bold flex items-center justify-center">${n[0]}</span><b class="text-sm">${n}</b></div>
     <div class="text-yellow-400 my-1.5">★★★★★</div>
     <p class="text-sm text-gray-600 leading-relaxed">${t}</p>
     <div class="flex items-center gap-3 mt-3"><button type="button" class="rv-thumb shrink-0 rounded-lg" data-i="${i}" aria-label="Ampliar foto de ${n}"><img src="/assets/review-${i + 1}.jpg" decoding="async" alt="Foto enviada por ${n}" class="h-16 w-16 rounded-lg object-cover border border-gray-100"/></button><span class="text-xs text-gray-500">Útil (${u})</span></div>
@@ -166,4 +167,15 @@ const ESTADOS = { AC: "Acre", AL: "Alagoas", AP: "Amapá", AM: "Amazonas", BA: "
   const txt = etaRangeText(ref.etaDays.min, ref.etaDays.max);
   $("#eta-top").textContent = txt;
   $("#eta-section").textContent = txt;
+})();
+
+// ---- Cliente manda a avaliação (com foto) pelo WhatsApp da loja ----
+(function reviewInvite() {
+  const num = "55" + String(S.whatsapp || "").replace(/\D/g, "");
+  const msg = encodeURIComponent("Olá! Comprei o Armário Multifuncional e quero deixar minha avaliação ⭐⭐⭐⭐⭐\n\nO que achei: \n\n(vou mandar uma foto também)");
+  const el = document.createElement("a");
+  el.id = "rv-send"; el.href = `https://wa.me/${num}?text=${msg}`; el.target = "_blank"; el.rel = "noopener";
+  el.className = "mt-2 flex items-center justify-center gap-2 rounded-xl border-2 border-green-600 text-green-700 font-bold text-sm py-3";
+  el.innerHTML = "📸 Já comprou? Envie sua avaliação com foto";
+  $("#reviews").after(el);
 })();

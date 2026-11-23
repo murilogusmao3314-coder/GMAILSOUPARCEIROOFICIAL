@@ -46,9 +46,10 @@ $("#up-yes").onclick = async () => {
   const ids = (() => { const ck = (n) => (document.cookie.match(new RegExp("(?:^|; )" + n + "=([^;]*)")) || [])[1]; return { fbp: ck("_fbp") || "", fbc: ck("_fbc") || "", sourceUrl: location.origin + "/upsell" }; })();
   try {
     if (!S.PIX_ENDPOINT) throw new Error("Pagamento indisponível no momento.");
-    const r = await fetch(S.PIX_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ upsell: true, amount: U.price, customer: buyer.customer, shipping: buyer.shipping, tracking: getUtms(), meta: ids }) });
-    const j = await r.json();
-    if (!r.ok || !j.success) throw new Error(j.error || "Não foi possível gerar o Pix. Tente novamente.");
+    let r;
+    try { r = await fetch(S.PIX_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ upsell: true, amount: U.price, customer: buyer.customer, shipping: buyer.shipping, tracking: getUtms(), meta: ids }) }); }
+    catch { throw new Error(PIX_INSTAVEL); }
+    const j = await readPixResponse(r);
     store.set("pix", { ...j.data, total: U.price, kind: "upsell", qty: 1, units: 1 });
     location.href = withUtms("/pix");
   } catch (e) { err(e.message); btn.disabled = false; $("#up-spin").classList.add("hidden"); $("#up-yes-label").dataset.label = `SIM! Quero comprar agora por ${brl(U.price)}`; }

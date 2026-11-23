@@ -100,3 +100,15 @@ function etaRangeText(minDays, maxDays) {
     : `Receba entre ${a.getDate()} de ${MESES_PT[a.getMonth()]} e ${b.getDate()} de ${MESES_PT[b.getMonth()]}`;
 }
 const shipEta = (s) => (s.etaDays ? etaRangeText(s.etaDays.min, s.etaDays.max) : s.eta || "");
+
+// Mensagem quando o Pix não é gerado por falha do gateway ou da conexão (não é erro de dado do cliente)
+const PIX_INSTAVEL = "Estamos com uma instabilidade momentânea para gerar o Pix. Toque no botão de novo para gerar o Pix novamente.";
+// Lê a resposta do /api/create-pix: erro de dado (400) mostra a mensagem do servidor; falha do gateway/rede vira "instabilidade"
+async function readPixResponse(r) {
+  let j = null;
+  try { j = await r.json(); } catch {}
+  if (r.ok && j && j.success) return j;
+  const e = new Error(r.status >= 500 || !j ? PIX_INSTAVEL : (j.error || PIX_INSTAVEL));
+  e.retry = r.status >= 500 || !j;
+  throw e;
+}

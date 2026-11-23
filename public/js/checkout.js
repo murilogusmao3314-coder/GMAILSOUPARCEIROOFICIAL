@@ -122,14 +122,15 @@ $("#buy").onclick = async () => {
   btn.disabled = true; btn.textContent = "Gerando Pix...";
   try {
     if (!S.PIX_ENDPOINT) throw new Error("Pagamento Pix ainda não configurado. Defina PIX_ENDPOINT em js/config.js (veja o README).");
-    const r = await fetch(S.PIX_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-    const j = await r.json();
-    if (!r.ok || !j.success) throw new Error(j.error || "Erro ao gerar pagamento. Tente novamente.");
+    let r;
+    try { r = await fetch(S.PIX_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }); }
+    catch { const e = new Error(PIX_INSTAVEL); e.retry = true; throw e; }   // sem internet / queda de conexão
+    const j = await readPixResponse(r);
     store.set("pix", { ...j.data, total, email: payload.customer.email, qty: qty + bumps.length, variant: VARIANTS[order.color].label, units: qty, shipName: S.shipping.find((s) => s.id === shipId).name });
     store.set("paid", null); store.set("upsellPaid", null);
     store.set("buyer", { customer: payload.customer, shipping: payload.shipping });
     store.set("mainOrder", { ref: j.data.externalRef, total, variant: VARIANTS[order.color].label, units: qty, extras: bumps.length });
     trackCustom("PixGerado", evData(total));
     location.href = withUtms("/pix");
-  } catch (e) { showErr(e.message); btn.disabled = false; btn.textContent = "Fazer pedido"; }
+  } catch (e) { showErr(e.message); btn.disabled = false; btn.textContent = e.retry ? "Gerar Pix novamente" : "Fazer pedido"; }
 };

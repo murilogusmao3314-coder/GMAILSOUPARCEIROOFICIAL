@@ -21,6 +21,9 @@ window.STORE = {
   // Vazio = o cronômetro conta até o fim do dia de hoje.
   promoEndsAt: "",
 
+  // Valor máximo por pedido (centavos). Acima disso o checkout pede para remover algum item.
+  maxOrderCents: 25000,
+
   // Opções de envio no checkout (preço em centavos). A 1ª da lista vem marcada.
   //  eta     = texto fixo do prazo
   //  etaDays = prazo em DIAS CORRIDOS a partir de hoje, mostrado como data ("Receba entre 24 e 26 de novembro")

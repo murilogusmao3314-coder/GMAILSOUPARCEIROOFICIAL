@@ -113,6 +113,12 @@ function metaIds() {
 $("#buy").onclick = async () => {
   if (!validate()) return;
   const total = render(), btn = $("#buy"), g = (id) => $("#" + id).value.trim();
+  // Limite por pedido nesta promoção
+  if (S.maxOrderCents && total > S.maxOrderCents) {
+    showErr(`Nesta promoção, cada pedido pode ter até ${brl(S.maxOrderCents)}. Remova algum item ou diminua a quantidade para continuar 😊`);
+    $("#p-title").closest("section").scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
   const payload = {
     tracking: getUtms(), meta: metaIds(), color: order.color, quantity: qty, amount: total, shippingOption: shipId, extras: bumps,
     customer: { name: g("name"), email: g("email"), phone: digits(g("phone")), document: { number: digits(g("cpf")), type: "cpf" } },

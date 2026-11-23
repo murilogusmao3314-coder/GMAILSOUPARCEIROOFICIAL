@@ -1,4 +1,4 @@
-import { pixx, computeAmount, validCPF, VARIANT_LABELS, orderTitle, UPSELL, newReference, TRACK_KEYS } from "../../../lib-pixxblack";
+import { pixx, MAX_ORDER_CENTS, computeAmount, validCPF, VARIANT_LABELS, orderTitle, UPSELL, newReference, TRACK_KEYS } from "../../../lib-pixxblack";
 
 export const dynamic = "force-dynamic";
 const str = (v, max = 120) => String(v ?? "").trim().slice(0, max);
@@ -14,6 +14,7 @@ export async function POST(req) {
   const amount = isUp ? UPSELL.price : computeAmount(b);
   if (amount === null) return fail("Pedido inválido.");
   if (Number(b.amount) !== amount) return fail("O valor do pedido mudou. Atualize a página e tente novamente.");
+  if (amount > MAX_ORDER_CENTS) return fail("Nesta promoção, cada pedido pode ter até R$ 250,00. Remova algum item ou diminua a quantidade para continuar 😊");
   if (!isUp && !(b.color in VARIANT_LABELS)) return fail("Variante inválida.");
   const title = isUp ? `Oferta extra - ${UPSELL.name}` : orderTitle(b);
 

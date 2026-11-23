@@ -35,6 +35,9 @@ export function validSignature(rawBody, header, secret, toleranceSeconds = 300) 
 }
 
 // ===== Preços (centavos). Mantenha IGUAL a public/js/config.js =====
+// Valor máximo por pedido (centavos). Mantenha igual a STORE.maxOrderCents em config.js
+export const MAX_ORDER_CENTS = 25000;
+
 export const PRICING = {
   productPrice: 7790,
   maxQty: 10,

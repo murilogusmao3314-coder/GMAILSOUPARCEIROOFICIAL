@@ -21,6 +21,9 @@ window.STORE = {
   // Vazio = o cronômetro conta até o fim do dia de hoje.
   promoEndsAt: "",
 
+  // Nome que o banco mostra como RECEBEDOR do Pix (confira num Pix de teste e escreva igual). Vazio = não mostra o nome.
+  pixRecipientName: "",
+
   // Valor máximo por pedido (centavos). Acima disso o checkout pede para remover algum item.
   maxOrderCents: 25000,
 

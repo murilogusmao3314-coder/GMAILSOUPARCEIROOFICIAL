@@ -31,6 +31,8 @@ else {
   }
 
   $("#s-ref").textContent = pix.externalRef || "";
+  $("#sec-total").textContent = brl(pix.total);
+  if (S.pixRecipientName) { $("#sec-name").textContent = S.pixRecipientName; $("#sec-name-row").classList.remove("hidden"); }
 
   // ----- Copiar -----
   const label = $("#copy-label");

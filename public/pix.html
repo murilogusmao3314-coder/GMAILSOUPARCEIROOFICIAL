@@ -59,6 +59,17 @@
       </button>
     </div>
 
+    <!-- Aviso de segurança do banco -->
+    <div class="rounded-2xl bg-amber-50 border border-amber-200 p-4">
+      <p class="text-sm font-bold text-amber-900 mb-1">🔒 O seu banco pode mostrar um aviso de segurança</p>
+      <p class="text-[13px] text-amber-900 leading-relaxed">Os bancos reforçaram a segurança do Pix e às vezes exibem um alerta preventivo em pagamentos para empresas. É um procedimento padrão. Antes de confirmar, confira:</p>
+      <ul class="text-[13px] text-amber-900 mt-2 space-y-1">
+        <li>✅ Valor: <b id="sec-total"></b></li>
+        <li id="sec-name-row" class="hidden">✅ Recebedor: <b id="sec-name"></b></li>
+      </ul>
+      <p class="text-[12px] text-amber-800 mt-2">Se algo não bater, não pague e <a href="/contato" class="underline font-semibold">fale com a gente</a>.</p>
+    </div>
+
     <!-- Já paguei -->
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center">
       <p class="text-sm font-semibold text-gray-900 mb-1">Já fez o pagamento?</p>

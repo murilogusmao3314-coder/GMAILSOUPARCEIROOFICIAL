@@ -1,6 +1,21 @@
-import { pixx, validSignature } from "../../../lib-pixxblack";
+import crypto from "crypto";
+import { pixx } from "../../../lib-pixxblack";
+
+// Confere a assinatura: header "X-PixBlack-Signature: t=<unix>,v1=<hex>", HMAC-SHA256(segredo, "<t>.<corpo bruto>")
+function validSignature(rawBody, header, secret, toleranceSeconds = 300) {
+  try {
+    if (typeof header !== "string" || !secret) return false;
+    const parts = Object.fromEntries(header.split(",").map((p) => p.trim().split("=", 2)));
+    const t = Number(parts.t), v1 = String(parts.v1 || "");
+    if (!Number.isInteger(t) || !/^[0-9a-f]{64}$/.test(v1)) return false;
+    if (Math.abs(Math.floor(Date.now() / 1000) - t) > toleranceSeconds) return false;   // recusa avisos antigos (reenvio)
+    const expected = crypto.createHmac("sha256", secret).update(`${t}.`).update(rawBody).digest();
+    return crypto.timingSafeEqual(expected, Buffer.from(v1, "hex"));
+  } catch { return false; }
+}
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 // Webhook da PixxBlack  ->  coloque no painel: Integrações > Webhooks:  https://SEU-DOMINIO/api/webhook
 //  * Confere a assinatura (X-PixBlack-Signature) com o segredo whsec_... (PIXXBLACK_WEBHOOK_SECRET). Sem assinatura válida: 400.

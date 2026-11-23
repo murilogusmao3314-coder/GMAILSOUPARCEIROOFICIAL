@@ -1,6 +1,8 @@
 import { pixx, MAX_ORDER_CENTS, computeAmount, validCPF, VARIANT_LABELS, orderTitle, UPSELL, newReference, TRACK_KEYS } from "../../../lib-pixxblack";
 
 export const dynamic = "force-dynamic";
+// Edge: sem "servidor frio" e roda perto do comprador (Brasil) => Pix gerado mais rápido
+export const runtime = "edge";
 const str = (v, max = 120) => String(v ?? "").trim().slice(0, max);
 const digits = (v) => String(v ?? "").replace(/\D/g, "");
 const fail = (error, status = 400) => Response.json({ success: false, error }, { status });
@@ -43,12 +45,14 @@ export async function POST(req) {
 
   try {
     // Idempotency-Key = referência do pedido: repetir a mesma chamada nunca cria uma segunda cobrança
+    const t0 = Date.now();
     const { ok, status, json } = await pixx("/charges", { method: "POST", headers: { "Idempotency-Key": reference }, body: JSON.stringify(payload) });
-    console.log("[create-pix] resposta", reference, status, json && JSON.stringify({ id: json.id, status: json.status, issues: json.issues, message: json.message }));
+    const ms = Date.now() - t0;   // quanto a PixxBlack levou para responder
+    console.log("[create-pix] resposta", reference, status, `PixxBlack ${ms}ms`, json && JSON.stringify({ id: json.id, status: json.status, issues: json.issues, message: json.message }));
     if (!ok || !json || !json.id || !json.pix || !json.pix.copy_paste) {
       return fail("Não foi possível gerar o Pix agora. Tente novamente em instantes.", 502);
     }
-    return Response.json({ success: true, data: { pixCode: json.pix.copy_paste, qrCodeImage: null, externalRef: reference, chargeId: json.id, expiresAt: json.pix.expires_at || null } });
+    return Response.json({ success: true, data: { pixCode: json.pix.copy_paste, qrCodeImage: null, externalRef: reference, chargeId: json.id, expiresAt: json.pix.expires_at || null } }, { headers: { "Server-Timing": `pixxblack;dur=${ms}` } });
   } catch (e) {
     console.error("create-pix", e.message);
     return fail("Pagamento indisponível no momento.", 502);

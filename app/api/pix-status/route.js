@@ -1,6 +1,7 @@
 import { pixx } from "../../../lib-pixxblack";
 
 export const dynamic = "force-dynamic";
+export const runtime = "edge";
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // GET /api/pix-status?id=<id da cobrança>&ref=ARM-...  ->  { paid: boolean, status }

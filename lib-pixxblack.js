@@ -1,5 +1,5 @@
 // Integração PixxBlack (servidor). A chave de API e o segredo do webhook ficam SOMENTE em variáveis de ambiente.
-import crypto from "crypto";
+// Este arquivo não usa módulos exclusivos do Node: roda também no Edge (create-pix e pix-status).
 
 const BASE = (process.env.PIXXBLACK_BASE_URL || "https://pixxblack.com/api/v1").replace(/\/$/, "");
 
@@ -19,19 +19,6 @@ export async function pixx(path, init = {}) {
   let json = null;
   try { json = await res.json(); } catch {}
   return { ok: res.ok, status: res.status, json };
-}
-
-// Confere a assinatura do webhook: header "X-PixBlack-Signature: t=<unix>,v1=<hex>", HMAC-SHA256(segredo, "<t>.<corpo bruto>")
-export function validSignature(rawBody, header, secret, toleranceSeconds = 300) {
-  try {
-    if (typeof header !== "string" || !secret) return false;
-    const parts = Object.fromEntries(header.split(",").map((p) => p.trim().split("=", 2)));
-    const t = Number(parts.t), v1 = String(parts.v1 || "");
-    if (!Number.isInteger(t) || !/^[0-9a-f]{64}$/.test(v1)) return false;
-    if (Math.abs(Math.floor(Date.now() / 1000) - t) > toleranceSeconds) return false;   // recusa avisos antigos (reenvio)
-    const expected = crypto.createHmac("sha256", secret).update(`${t}.`).update(rawBody).digest();
-    return crypto.timingSafeEqual(expected, Buffer.from(v1, "hex"));
-  } catch { return false; }
 }
 
 // ===== Preços (centavos). Mantenha IGUAL a public/js/config.js =====
@@ -85,7 +72,11 @@ export function validCPF(v) {
 }
 
 // Referência do pedido (vai em external_reference e também é a Idempotency-Key): só A-Z 0-9 e "-"
-export const newReference = () => `ARM-${Date.now()}-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
+export const newReference = () => {
+  const b = new Uint8Array(4);
+  globalThis.crypto.getRandomValues(b);   // Web Crypto: funciona no Edge e no Node
+  return `ARM-${Date.now()}-${Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("").toUpperCase()}`;
+};
 
 // Campos de rastreamento aceitos pela PixxBlack (ela repassa à UTMify, se estiver conectada em Integrações)
 export const TRACK_KEYS = ["src", "sck", "utm_source", "utm_campaign", "utm_medium", "utm_content", "utm_term"];

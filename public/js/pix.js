@@ -42,8 +42,8 @@ else {
     clearTimeout(window.__ct); window.__ct = setTimeout(() => { label.textContent = "Copiar código Pix"; $("#copy").classList.replace("bg-emerald-700", "bg-emerald-600"); }, 4000);
   };
 
-  // ----- Validade do código (só mostra se a PinguPag informou) -----
-  const expMs = pix.expiresAt ? Date.parse(String(pix.expiresAt).replace(" ", "T") + "-03:00") : NaN;
+  // ----- Validade do código (30 min, informada pela PixxBlack) -----
+  const expMs = pix.expiresAt ? Date.parse(pix.expiresAt) : NaN;   // ISO 8601 em UTC
   let expired = false;
   if (Number.isFinite(expMs) && expMs - Date.now() > 0 && expMs - Date.now() < 6 * 3600 * 1000) {
     $("#timer-box").classList.remove("hidden");
@@ -63,8 +63,8 @@ else {
     $("#status-text").textContent = text;
   }
   async function checkPaid() {
-    if (!S.PIX_STATUS_ENDPOINT || !pix.externalRef) return null;
-    try { const j = await (await fetch(`${S.PIX_STATUS_ENDPOINT}?ref=${encodeURIComponent(pix.externalRef)}`, { cache: "no-store" })).json(); return !!j.paid; }
+    if (!S.PIX_STATUS_ENDPOINT || !pix.externalRef || !pix.chargeId) return null;
+    try { const j = await (await fetch(`${S.PIX_STATUS_ENDPOINT}?id=${encodeURIComponent(pix.chargeId)}&ref=${encodeURIComponent(pix.externalRef)}`, { cache: "no-store" })).json(); return !!j.paid; }
     catch { return null; }
   }
   let done = false;

@@ -41,8 +41,8 @@ window.STORE = {
   upsell: { name: "Kit Cozinha Completa (3 produtos)", price: 5990, image: "/assets/upsell-kit.jpg", items: ["panelas", "potes", "turbochef"] },
 
   // Integração de pagamento Pix (SEU backend/gateway). Veja o README.
-  // POST  PIX_ENDPOINT            -> { success:true, data:{ pixCode, qrCodeImage?, externalRef } }
-  // GET   PIX_STATUS_ENDPOINT?ref=-> { paid: true|false }
+  // POST  PIX_ENDPOINT            -> { success:true, data:{ pixCode, externalRef, chargeId, expiresAt } }
+  // GET   PIX_STATUS_ENDPOINT?id=&ref= -> { paid: true|false, status }
   PIX_ENDPOINT: "/api/create-pix",
   PIX_STATUS_ENDPOINT: "/api/pix-status",
 };

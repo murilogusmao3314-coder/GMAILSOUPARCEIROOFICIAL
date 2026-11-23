@@ -18,10 +18,7 @@ Projeto Next.js (compatível com v0/Vercel): as páginas ficam em `public/` e `n
 ## O que você precisa editar — `public/js/config.js`
 - Nome da loja, e-mail, telefone, razão social, CNPJ, endereço (aparecem em contato, rodapé e políticas). Já preenchido com os dados da Casa Fácil / RCS Sports Management & Solutions LTDA.
 - Preço, preço "de" (use só um preço realmente praticado), frete e produtos extras.
-- **Pix (PinguPag)**: já integrado — veja a seção "PinguPag" abaixo. O front chama `PIX_ENDPOINT` (agora `/api/create-pix`) com um POST JSON e espera
-  `{ "success": true, "data": { "pixCode": "...", "qrCodeImage": "data:image/png;base64,...", "externalRef": "..." } }`.
-  Opcional: `PIX_STATUS_ENDPOINT?ref=...` retornando `{ "paid": true }` para redirecionar a `/obrigado` automaticamente.
-  Sem o endpoint configurado, o checkout avisa que o pagamento não está configurado.
+- **Pix (PixxBlack)**: já integrado — veja a seção "PixxBlack" abaixo. O front chama `PIX_ENDPOINT` (`/api/create-pix`) e consulta `PIX_STATUS_ENDPOINT` (`/api/pix-status`) até o pagamento ser confirmado.
 
 ## Antes de publicar
 - Troque os textos/avaliações/contagens ("5.821 vendidos", 327 avaliações, etc.) por dados reais da sua loja.
@@ -31,36 +28,37 @@ Projeto Next.js (compatível com v0/Vercel): as páginas ficam em `public/` e `n
 Em todas as páginas: `window.pixelId` + `cdn.utmify.com.br/scripts/pixel/pixel.js` e o script de UTMs (`.../utms/latest.js`).
 Todos os parâmetros da URL de entrada (UTMs, fbclid e qualquer outro) são guardados em `localStorage` (chave `url_params`) e anexados a todo link/navegação interna (home → checkout → Pix → obrigado). Também vão no campo `tracking` do `PIX_ENDPOINT`.
 
-## PinguPag (Pix)
-Rotas de servidor (a chave secreta nunca vai para o navegador):
-- `POST /api/create-pix` → valida o pedido, **recalcula o valor no servidor** e cria a transação em `POST /gateway/v1/transaction` (envia cliente, endereço e UTMs em `tracking`). Responde `{ success, data: { pixCode, qrCodeImage, externalRef } }`.
-- `GET /api/pix-status?ref=...` → consulta `/gateway/v1/query?action=list_transactions&external_id=...`; `approved` = pago. É isso que dispara a ida para `/obrigado` e o evento **Purchase**.
-- `POST /api/webhook` → recebe o postback da PinguPag e responde 200.
+## PixxBlack (Pix)
+Rotas de servidor (a chave nunca vai para o navegador):
+- `POST /api/create-pix` → valida o pedido, **recalcula o valor no servidor** e cria a cobrança em `POST /charges` (envia pagador, descrição, `external_reference` e UTMs em `tracking`; `Idempotency-Key` = referência do pedido). Devolve o código copia e cola (o QR Code é gerado na tela).
+- `GET /api/pix-status?id=<id da cobrança>&ref=<pedido>` → consulta `GET /charges/{id}`; `paid` = pago. É isso que leva o cliente a `/upsell` e depois a `/confirmado`.
+- `POST /api/webhook` → recebe os avisos da PixxBlack. **Confere a assinatura** (`X-PixBlack-Signature`, tolerância de 5 min), ignora evento repetido (mesmo `id`) e, em `charge.paid`, confirma na API antes de considerar paga.
 
-**Para ativar:** na Vercel, em *Settings → Environment Variables*, crie `PINGUPAG_API_KEY` com a sua Chave Secreta (painel PinguPag → "Configurações e API") e faça um novo deploy.
-Se mudar preços/frete/extras em `public/js/config.js`, atualize também `PRICING` em `lib-pingupag.js` (o servidor recusa pedidos com valor diferente).
+**Para ativar** (Vercel → Settings → Environment Variables, depois novo deploy):
+1. `PIXXBLACK_API_KEY` — painel PixxBlack → Integrações → "Gerar chave de API".
+2. `PIXXBLACK_WEBHOOK_SECRET` — painel → Integrações → Webhooks: cadastre `https://SEU-DOMINIO/api/webhook` e copie o segredo `whsec_...` (aparece uma única vez).
+
+Se mudar preços/frete/extras em `public/js/config.js`, atualize também `PRICING` em `lib-pixxblack.js` (o servidor recusa pedidos com valor diferente).
+
+**Endereço:** a API da PixxBlack **não tem campo de endereço**. O que o cliente digitar no checkout não é enviado ao gateway.
 
 ## Vendas na UTMify e na Meta (sem duplicar)
-**Regra de ouro: a Meta é tratada SÓ pela UTMify.** A UTMify já dispara o Pixel Meta e a API de Conversões
-(com o ID de deduplicação dela). Por isso este site **não** carrega o código do Pixel Meta e **não** envia
-nada à Meta — qualquer evento extra nosso seria contado em dobro (o aviso "Detectamos outro código de Pixel Meta").
+**A venda vai para a UTMify pela integração da própria PixxBlack**, e a **Meta é tratada só pela UTMify** (Pixel + API de Conversões, com deduplicação). O site não manda venda nenhuma à UTMify nem nada à Meta: qualquer envio extra contaria em dobro.
 
 | Etapa | O que acontece |
 |---|---|
-| Visita / checkout | scripts da UTMify (`pixel.js` + `utms/latest.js`) registram a sessão e disparam os eventos da Meta |
-| Pix gerado | o servidor envia o pedido à UTMify como `waiting_payment` (com UTMs, cliente e produtos) |
-| Pix pago | o webhook da PinguPag (link assinado, confirmado na API) envia o **mesmo `orderId`** como `paid` → a UTMify registra a venda na campanha/conjunto/anúncio e repassa o Purchase à Meta |
-
-Anti-duplicação: `orderId` fixo (= referência do pedido) e `createdAt` derivado da referência; reenvios do webhook só atualizam o mesmo pedido.
+| Visita / checkout | scripts da UTMify (`public/js/utmify.js`) registram a sessão e disparam os eventos da Meta |
+| Pix gerado | o site cria a cobrança na PixxBlack **com os UTMs** (`tracking`) e os dados do pagador; a PixxBlack envia o pedido à UTMify |
+| Pix pago | a PixxBlack envia o pagamento à UTMify (e devolução, se houver) |
 
 **Checklist:**
-1. **PinguPag**: integração nativa com a UTMify **desligada** (senão a venda entra duas vezes).
-2. **UTMify**: Pixel Meta cadastrado (já feito). Não adicione o código do Pixel Meta no site.
-3. Vercel: `UTMIFY_API_TOKEN` (UTMify → Integrações → Webhooks → Credenciais de API) e `PINGUPAG_API_KEY`.
-4. Teste: uma venda de valor baixo → na UTMify o pedido aparece **uma vez**, com campanha/conjunto/anúncio; na Meta o Purchase aparece **uma vez**. O aviso de "outro Pixel Meta" deve sumir.
+1. **PixxBlack → Integrações → UTMify:** conecte a UTMify (é por aqui que a venda chega lá, com campanha/conjunto/anúncio).
+2. **UTMify:** Pixel Meta cadastrado, com o token da API de Conversões. Não coloque o código do Pixel Meta no site.
+3. Anúncios com os parâmetros de URL (`utm_source=FB&utm_campaign={{campaign.name}}|{{campaign.id}}…`); os UTMs são guardados e levados até o Pix.
+4. Teste: uma venda → na UTMify o pedido aparece **uma vez**, com campanha/conjunto/anúncio; na Meta o Purchase aparece **uma vez**.
 
 ## Fluxo pós-pagamento (upsell)
 `/checkout` → `/pix` → (pago) → **`/upsell`** → `/confirmado`
-- `/upsell`: oferta do Kit Cozinha Completa (3 produtos, R$ 59,90 — `STORE.upsell` em `public/js/config.js` e `UPSELL` em `lib-pingupag.js`, mantenha iguais). "Comprar agora" gera um **novo Pix** com os dados já informados (pedido separado, com `orderId` próprio e os mesmos UTMs); "Não quero" vai direto para `/confirmado`.
+- `/upsell`: oferta do Kit Cozinha Completa (3 produtos, R$ 59,90 — `STORE.upsell` em `public/js/config.js` e `UPSELL` em `lib-pixxblack.js`, mantenha iguais). "Comprar agora" gera um **novo Pix** com os dados já informados (pedido separado, com `orderId` próprio e os mesmos UTMs); "Não quero" vai direto para `/confirmado`.
 - `/confirmado`: tela de confirmação com confete e resumo (inclui o upsell se foi pago).
-- Cada Pix (pedido e upsell) vira uma venda separada na PinguPag/UTMify.
+- Cada Pix (pedido e upsell) vira uma cobrança separada na PixxBlack e uma venda separada na UTMify.
